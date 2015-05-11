@@ -1,0 +1,22 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+
+<use name="DataFormats/HepMCCandidate"/>
+<use name="RecoTauTag/RecoTau"/>
+
+<use name="RecoVertex/KalmanVertexFit"/>
+<use name="DataFormats/TrackReco"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="CommonTools/UtilAlgos"/>
+<use name="DataFormats/VertexReco"/>
+<use name="RecoVertex/KinematicFitPrimitives"/>
+<use name="RecoVertex/VertexTools"/>
+<use name="TrackingTools/IPTools"/>
+<use name="TrackingTools/PatternTools"/>
+<use name="TrackingTools/GeomPropagators"/>
+<use name="TrackingTools/TransientTrack"/>
+<use name="TrackingTools/Records"/>
+<use name="DataFormats/Candidate"/>
+
+<flags EDM_PLUGIN="1"/>

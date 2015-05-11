@@ -1,0 +1,56 @@
+154c154
+<  //Order in Pt (Not too elegant sort, improve it)  
+---
+>  //Order in Pt (Not too elegant, improve it)  
+194,218c194,218
+<    double pftauchhad_IP3D_val = 0;
+<    double pftauchhad_IP3D_err = 0;
+<    double pftauchhad_IP3D_sig = 0;
+<    double pftauchhad_IP2D_val = 0;
+<    double pftauchhad_IP2D_err = 0;
+<    double pftauchhad_IP2D_sig = 0;
+<    double pftauchhad_sIP3D_val = 0;
+<    double pftauchhad_sIP3D_err = 0;
+<    double pftauchhad_sIP3D_sig = 0;
+<    double pftauchhad_sIP2D_val = 0;
+<    double pftauchhad_sIP2D_err = 0;
+<    double pftauchhad_sIP2D_sig = 0;
+<    IPToolsValues( candtrk,*ttrkbuilder,pv,pftaugv, pftauchhad_IP3D_val,pftauchhad_IP3D_err,pftauchhad_IP3D_sig,  pftauchhad_IP2D_val,pftauchhad_IP2D_err,pftauchhad_IP2D_sig, pftauchhad_sIP3D_val,pftauchhad_sIP3D_err,pftauchhad_sIP3D_sig,  pftauchhad_sIP2D_val,pftauchhad_sIP2D_err,pftauchhad_sIP2D_sig );
+<    tree->pftauchhads_IP3D_val[p] = pftauchhad_IP3D_val;
+<    tree->pftauchhads_IP3D_err[p] = pftauchhad_IP3D_err;
+<    tree->pftauchhads_IP3D_sig[p] = pftauchhad_IP3D_sig;
+<    tree->pftauchhads_IP2D_val[p] = pftauchhad_IP2D_val;
+<    tree->pftauchhads_IP2D_err[p] = pftauchhad_IP2D_err;
+<    tree->pftauchhads_IP2D_sig[p] = pftauchhad_IP2D_sig;
+<    tree->pftauchhads_sIP3D_val[p] = pftauchhad_sIP3D_val;
+<    tree->pftauchhads_sIP3D_err[p] = pftauchhad_sIP3D_err;
+<    tree->pftauchhads_sIP3D_sig[p] = pftauchhad_sIP3D_sig;
+<    tree->pftauchhads_sIP2D_val[p] = pftauchhad_sIP2D_val;
+<    tree->pftauchhads_sIP2D_err[p] = pftauchhad_sIP2D_err;
+<    tree->pftauchhads_sIP2D_sig[p] = pftauchhad_sIP2D_sig;
+---
+>    double pftauchhads_IP3D_val = 0;
+>    double pftauchhads_IP3D_err = 0;
+>    double pftauchhads_IP3D_sig = 0;
+>    double pftauchhads_IP2D_val = 0;
+>    double pftauchhads_IP2D_err = 0;
+>    double pftauchhads_IP2D_sig = 0;
+>    double pftauchhads_sIP3D_val = 0;
+>    double pftauchhads_sIP3D_err = 0;
+>    double pftauchhads_sIP3D_sig = 0;
+>    double pftauchhads_sIP2D_val = 0;
+>    double pftauchhads_sIP2D_err = 0;
+>    double pftauchhads_sIP2D_sig = 0;
+>    IPToolsValues( candtrk,*ttrkbuilder,pv,pftaugv, pftauchhads_IP3D_val,pftauchhads_IP3D_err,pftauchhads_IP3D_sig,  pftauchhads_IP2D_val,pftauchhads_IP2D_err,pftauchhads_IP2D_sig, pftauchhads_sIP3D_val,pftauchhads_sIP3D_err,pftauchhads_sIP3D_sig,  pftauchhads_sIP2D_val,pftauchhads_sIP2D_err,pftauchhads_sIP2D_sig );
+>    tree->pftauchhads_IP3D_val[p] = pftauchhads_IP3D_val;
+>    tree->pftauchhads_IP3D_err[p] = pftauchhads_IP3D_err;
+>    tree->pftauchhads_IP3D_sig[p] = pftauchhads_IP3D_sig;
+>    tree->pftauchhads_IP2D_val[p] = pftauchhads_IP2D_val;
+>    tree->pftauchhads_IP2D_err[p] = pftauchhads_IP2D_err;
+>    tree->pftauchhads_IP2D_sig[p] = pftauchhads_IP2D_sig;
+>    tree->pftauchhads_sIP3D_val[p] = pftauchhads_sIP3D_val;
+>    tree->pftauchhads_sIP3D_err[p] = pftauchhads_sIP3D_err;
+>    tree->pftauchhads_sIP3D_sig[p] = pftauchhads_sIP3D_sig;
+>    tree->pftauchhads_sIP2D_val[p] = pftauchhads_sIP2D_val;
+>    tree->pftauchhads_sIP2D_err[p] = pftauchhads_sIP2D_err;
+>    tree->pftauchhads_sIP2D_sig[p] = pftauchhads_sIP2D_sig;
