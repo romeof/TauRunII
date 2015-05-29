@@ -90,6 +90,36 @@ TransientVertex unbiased_vertex(const reco::Vertex vtx, const TransientTrackBuil
  if(vtxttrk.size()>=2) unbvtx = vtxFitter.vertex(vtxttrk);
  return unbvtx;
 }
+//Get the unbiased vertex as before, but now we want to add tau trks to the unbiased vertex 
+TransientVertex unbiased_vertex_withtautrks(const reco::Vertex vtx, const TransientTrackBuilder& ttrkbuilder, const PFTau& pftau){
+ TransientVertex unbvtx;
+ //Get the tracks of the pftau
+ vector<double> pftautrks_pt;
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ for(uint p=0; p<sigpfchhadcands.size(); p++){
+  PFCandidatePtr cand = sigpfchhadcands[p];
+  const Track* candtrk = cand->bestTrack(); 
+  if(!candtrk) continue;
+  pftautrks_pt.push_back(candtrk->pt());
+ }
+ //Get the transient track of the pv excluding the tracks of the pftau
+ vector<TransientTrack> vtxttrk;
+ for(vector<reco::TrackBaseRef>::const_iterator pvtrk=vtx.tracks_begin(); pvtrk!=vtx.tracks_end(); pvtrk++){
+  if(!(pvtrk->isNonnull())) continue;
+  bool nopftautrk = true;
+  for(uint t=0; t<pftautrks_pt.size(); t++) if(pftautrks_pt[t]==(**pvtrk).pt()) nopftautrk = false;
+  if(nopftautrk) vtxttrk.push_back(ttrkbuilder.build(**pvtrk));
+ }
+ //Add tau trks
+ for(uint p=0; p<sigpfchhadcands.size(); p++){
+  PFCandidatePtr cand = sigpfchhadcands[p];
+  const Track* candtrk = cand->bestTrack();
+  if(!candtrk) continue;
+  vtxttrk.push_back(ttrkbuilder.build(*candtrk));
+ } 
+ if(vtxttrk.size()>=2) unbvtx = vtxFitter.vertex(vtxttrk);
+ return unbvtx;
+}
 //Get the refitted vertex using vtx tracks (to check the vertex is the same of the original one)
 TransientVertex refitted_vertex(const reco::Vertex vtx, const TransientTrackBuilder& ttrkbuilder){
  TransientVertex unbvtx;

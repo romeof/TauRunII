@@ -51,6 +51,14 @@ public:
  /////
  //Usefull
  double duno;
+ double numrecovtcs;
+ //dR
+ double dR_RecoGen;
+ double dR_vtxDirGen;
+ //pftaugv
+ double pftaugv_x;
+ double pftaugv_y;
+ double pftaugv_z;
  //Kinematic
  double tau_pt, tau_eta, tau_phi, tau_en, tau_ch;
  //IP
@@ -67,6 +75,14 @@ public:
  void loop_initialize(void){
   //Usefull
   duno        = 1.;
+  numrecovtcs = DEF_VAL_DOUBLE;
+  //dR
+  dR_RecoGen = DEF_VAL_DOUBLE;
+  dR_vtxDirGen = DEF_VAL_DOUBLE;
+  //pftaugv
+  pftaugv_x = DEF_VAL_DOUBLE;
+  pftaugv_y = DEF_VAL_DOUBLE;
+  pftaugv_z = DEF_VAL_DOUBLE;
   //Kinematic
   tau_pt  = DEF_VAL_DOUBLE;
   tau_eta = DEF_VAL_DOUBLE;
@@ -110,6 +126,14 @@ public:
  void make_branches(void){
   //Usefull
   tree->Branch("duno", &duno, "duno/D");
+  tree->Branch("numrecovtcs", &numrecovtcs, "numrecovtcs/D");
+  //dR
+  tree->Branch("dR_RecoGen", &dR_RecoGen, "dR_RecoGen/D");
+  tree->Branch("dR_vtxDirGen", &dR_vtxDirGen, "dR_vtxDirGen/D");
+  //pftaugv
+  tree->Branch("pftaugv_x", &pftaugv_x, "pftaugv_x/D");
+  tree->Branch("pftaugv_y", &pftaugv_y, "pftaugv_y/D");
+  tree->Branch("pftaugv_z", &pftaugv_z, "pftaugv_z/D");
   //Kinematic
   tree->Branch("tau_pt", &tau_pt, "tau_pt/D");
   tree->Branch("tau_eta", &tau_eta, "tau_eta/D");
@@ -154,6 +178,14 @@ public:
  void set_branch_addresses(void){
   //Usefull
   tree->SetBranchAddress("duno", &duno);
+  tree->SetBranchAddress("numrecovtcs", &numrecovtcs);
+  //dR
+  tree->SetBranchAddress("dR_RecoGen", &dR_RecoGen);
+  tree->SetBranchAddress("dR_vtxDirGen", &dR_vtxDirGen);
+  //pftaugv
+  tree->SetBranchAddress("pftaugv_x", &pftaugv_x);
+  tree->SetBranchAddress("pftaugv_y", &pftaugv_y);
+  tree->SetBranchAddress("pftaugv_z", &pftaugv_z);
   //Kinematic
   tree->SetBranchAddress("tau_pt", &tau_pt);
   tree->SetBranchAddress("tau_eta", &tau_eta);

@@ -148,6 +148,12 @@ void JetTauFakeRateDisc::analyze(const edm::Event& iEvent, const edm::EventSetup
  //TransientTrackBuilder
  edm::ESHandle<TransientTrackBuilder> ttrkbuilder;
  iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",ttrkbuilder); 
+ //GenPart Collection
+ Handle<vector<GenParticle> > genParts;
+ iEvent.getByLabel("genParticles", genParts);
+ //GenJet Collection
+ edm::Handle<vector<GenJet> > genjets;
+ iEvent.getByLabel("ak4GenJets", genjets);
  //Tau collection
  Handle<vector<PFTau> > PFTaus;
  iEvent.getByLabel("hpsPFTauProducer", PFTaus);
@@ -160,14 +166,14 @@ void JetTauFakeRateDisc::analyze(const edm::Event& iEvent, const edm::EventSetup
   const PFTau& pftau = (*PFTaus)[TauPtPos[taupos].second];
   //Minimum tau requirements
   if(!(pftau.pt()>tau_min_pt && fabs(pftau.eta())<tau_max_eta && pftau.decayMode()!=-1)) continue;
-  //Matching with GenTauh (posgenmatchedcand = -1 if there is no matching)
+  //Matching with Gen Part (posgenmatchedcand = -1 if there is no matching)
   int posgenmatchedcand = -1;
   if(tau_gentauh_match) posgenmatchedcand = MatchRecoTauhGenTauh(pftau,iEvent);
   if(tau_genjet_match)  posgenmatchedcand = MatchRecoTauhGenJet(pftau,iEvent);
-  //const PFJetRef & pfjetref = pftau.jetRef();
   if(posgenmatchedcand==-1) continue;
   //Now get the info you need for the study
   tree->loop_initialize();
+  tree->numrecovtcs = vertices->size();
   //Refit PV removing pftau ch hads
   //TransientVertex refpv = refitted_vertex(pv,*ttrkbuilder);
   TransientVertex unbpv = unbiased_vertex(pv,*ttrkbuilder,pftau);
@@ -184,13 +190,68 @@ void JetTauFakeRateDisc::analyze(const edm::Event& iEvent, const edm::EventSetup
   tree->tau_vtxdxy  = sqrt(pow(pftau.vertex().x()-pv.position().x(),2)+pow(pftau.vertex().y()-pv.position().y(),2));
   tree->tau_vtxdxyz = sqrt(pow(pftau.vertex().x()-pv.position().x(),2)+pow(pftau.vertex().y()-pv.position().y(),2)+pow(pftau.vertex().z()-pv.position().z(),2));
   //Info of tau constituents (for tau ch had)
-  GlobalVector pftaugv(pftau.px(), pftau.py(), pftau.pz());
+  GlobalVector pftaugv(0.,0.,0.);
+  //To do: Use python booleans to choose the direction for the sign the IPs
+  //Direction of the reco tau
+  //GlobalVector pftaugv(pftau.px(), pftau.py(), pftau.pz());
+  //Direction of gen tau associated to the reco tau  
+  //if(tau_gentauh_match){
+  //  const GenParticle & genPart = (*genParts)[posgenmatchedcand];
+  //  GlobalVector temp(genPart.px(), genPart.py(), genPart.pz());
+  //  pftaugv = temp;
+  //}
+  //Direction of gen jet associated to the reco tau
+  //if(tau_genjet_match){
+  //  const GenJet & genJet = (*genjets)[posgenmatchedcand];
+  //  GlobalVector temp(genJet.px(), genJet.py(), genJet.pz());
+  //  pftaugv = temp;
+  //}
+  //Direction of the unbiased vertex (unbpv) including the tau tracks
+  TransientVertex unbpv_withtautrks = unbiased_vertex_withtautrks(pv,*ttrkbuilder,pftau);
+  if(unbpv_withtautrks.isValid()){
+   GlobalVector temp(unbpv_withtautrks.position().x()-unbpv.position().x(),
+                     unbpv_withtautrks.position().y()-unbpv.position().y(),
+                     unbpv_withtautrks.position().z()-unbpv.position().z()
+                    );
+   pftaugv = temp;
+  }else{
+   GlobalVector temp(pftau.px(), pftau.py(), pftau.pz());
+   pftaugv = temp; 
+  }
+  tree->pftaugv_x = pftaugv.x();
+  tree->pftaugv_y = pftaugv.y();
+  tree->pftaugv_z = pftaugv.z();
+  //Access tau tracks info
   const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
   for(uint p=0; p<sigpfchhadcands.size(); p++){
    PFCandidatePtr cand = sigpfchhadcands[p];
    const Track* candtrk = cand->bestTrack();
    if(!candtrk) continue;
+   //To do: check results without is_goodtrk condition
    if(!is_goodtrk(candtrk,pv)) continue;
+   //dR between reco tau/jet and gen part 
+   math::PtEtaPhiELorentzVector recotaujet_lv(0., 0., 0., 0.);
+   math::PtEtaPhiELorentzVector gentaujet_lv(0., 0., 0., 0.);
+   if(tau_gentauh_match){
+    const GenParticle & genPart = (*genParts)[posgenmatchedcand];
+    math::PtEtaPhiELorentzVector tempgen(genPart.pt(), genPart.eta(), genPart.phi(), genPart.energy());
+    gentaujet_lv = tempgen;
+    math::PtEtaPhiELorentzVector tempreco(pftau.pt(), pftau.eta(), pftau.phi(), pftau.energy());
+    recotaujet_lv = tempreco;
+   }
+   if(tau_genjet_match){
+    const GenJet & genJet = (*genjets)[posgenmatchedcand];
+    math::PtEtaPhiELorentzVector tempgen(genJet.pt(), genJet.eta(), genJet.phi(), genJet.energy());
+    gentaujet_lv = tempgen;
+    const PFJetRef& recojettau = pftau.jetRef();
+    math::PtEtaPhiELorentzVector tempreco(recojettau->pt(), recojettau->eta(), recojettau->phi(), recojettau->energy());
+    recotaujet_lv = tempreco;
+   }
+   double dR_RecoGen = ROOT::Math::VectorUtil::DeltaR(recotaujet_lv, gentaujet_lv);
+   tree->dR_RecoGen  = dR_RecoGen;  
+   //To do: temporary initialisation (pftaugv may not always be from vtxDir)
+   double dR_vtxDirGen = deltaR(pftaugv.eta(), pftaugv.phi(), gentaujet_lv.eta(), gentaujet_lv.phi());
+   tree->dR_vtxDirGen  = dR_vtxDirGen;
    //Kinematic
    tree->pftauchhads_pt[p]  = cand->pt();
    tree->pftauchhads_eta[p] = cand->eta();

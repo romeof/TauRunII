@@ -12,8 +12,8 @@
 varType=double
 varTYPE=DOUBLE
 capLetter=D
-varList=(tau_dxy tau_dz)
-varLast=tau_dz
+varList=(numrecovtcs)
+varLast=numrecovtcs
 varNum=ele_num
 varCount=gl
 #Print info
