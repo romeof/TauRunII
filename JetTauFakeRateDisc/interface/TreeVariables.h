@@ -52,7 +52,13 @@ public:
  //Usefull
  double duno;
  double numrecovtcs;
+ //Vertex resolution
+ double genditauvtx_x, genditauvtx_y, genditauvtx_z;
+ double unbpv_KVF_nv, unbpv_KVFbs_nv, unbpv_AVF_nv, unbpv_AVFbs_nv;
+ double vtxKVF_x, vtxKVF_y, vtxKVF_z, vtxKVFbs_x, vtxKVFbs_y, vtxKVFbs_z, vtxAVF_x, vtxAVF_y, vtxAVF_z, vtxAVFbs_x, vtxAVFbs_y, vtxAVFbs_z; 
+ double pvtauvtx_genditauvtx_x, pvtauvtx_genditauvtx_y, pvtauvtx_genditauvtx_z, unbpv_KVF_genditauvtx_x, unbpv_KVF_genditauvtx_y, unbpv_KVF_genditauvtx_z;
  //dR
+ double dR_recojettau_recotau;
  double dR_RecoGen;
  double dR_vtxDirGen;
  //pftaugv
@@ -68,7 +74,10 @@ public:
  double pftauchhads_num; 
  double pftauchhads_pt[DEF_SIZE1D], pftauchhads_eta[DEF_SIZE1D], pftauchhads_phi[DEF_SIZE1D], pftauchhads_en[DEF_SIZE1D], pftauchhads_ch[DEF_SIZE1D];
  double pftauchhads_IP3D_val[DEF_SIZE1D], pftauchhads_IP3D_err[DEF_SIZE1D], pftauchhads_IP3D_sig[DEF_SIZE1D], pftauchhads_IP2D_val[DEF_SIZE1D], pftauchhads_IP2D_err[DEF_SIZE1D], pftauchhads_IP2D_sig[DEF_SIZE1D], pftauchhads_sIP3D_val[DEF_SIZE1D], pftauchhads_sIP3D_err[DEF_SIZE1D], pftauchhads_sIP3D_sig[DEF_SIZE1D], pftauchhads_sIP2D_val[DEF_SIZE1D], pftauchhads_sIP2D_err[DEF_SIZE1D], pftauchhads_sIP2D_sig[DEF_SIZE1D];
+ double pftauchhads_IP3Ddv_val[DEF_SIZE1D], pftauchhads_IP3Ddv_err[DEF_SIZE1D], pftauchhads_IP3Ddv_sig[DEF_SIZE1D], pftauchhads_IP2Ddv_val[DEF_SIZE1D], pftauchhads_IP2Ddv_err[DEF_SIZE1D], pftauchhads_IP2Ddv_sig[DEF_SIZE1D], pftauchhads_sIP3Ddv_val[DEF_SIZE1D], pftauchhads_sIP3Ddv_err[DEF_SIZE1D], pftauchhads_sIP3Ddv_sig[DEF_SIZE1D], pftauchhads_sIP2Ddv_val[DEF_SIZE1D], pftauchhads_sIP2Ddv_err[DEF_SIZE1D], pftauchhads_sIP2Ddv_sig[DEF_SIZE1D];
  double pftauchhads_IP1D_val[DEF_SIZE1D], pftauchhads_IP1D_err[DEF_SIZE1D], pftauchhads_IP1D_sig[DEF_SIZE1D], pftauchhads_sIP1D_val[DEF_SIZE1D], pftauchhads_sIP1D_err[DEF_SIZE1D], pftauchhads_sIP1D_sig[DEF_SIZE1D];
+ //Collimation of tau tracks
+ double dR_tautrk_recotau[DEF_SIZE1D];
  /////
  //   Initialise
  /////
@@ -76,7 +85,34 @@ public:
   //Usefull
   duno        = 1.;
   numrecovtcs = DEF_VAL_DOUBLE;
+  //Vertex resolution
+  genditauvtx_x = DEF_VAL_DOUBLE;
+  genditauvtx_y = DEF_VAL_DOUBLE;
+  genditauvtx_z = DEF_VAL_DOUBLE;  
+  unbpv_KVF_nv = DEF_VAL_DOUBLE;
+  unbpv_KVFbs_nv = DEF_VAL_DOUBLE;
+  unbpv_AVF_nv = DEF_VAL_DOUBLE;
+  unbpv_AVFbs_nv = DEF_VAL_DOUBLE;
+  vtxKVF_x = DEF_VAL_DOUBLE;
+  vtxKVF_y = DEF_VAL_DOUBLE;
+  vtxKVF_z = DEF_VAL_DOUBLE;
+  vtxKVFbs_x = DEF_VAL_DOUBLE;
+  vtxKVFbs_y = DEF_VAL_DOUBLE;
+  vtxKVFbs_z = DEF_VAL_DOUBLE;
+  vtxAVF_x = DEF_VAL_DOUBLE;
+  vtxAVF_y = DEF_VAL_DOUBLE;
+  vtxAVF_z = DEF_VAL_DOUBLE;
+  vtxAVFbs_x = DEF_VAL_DOUBLE;
+  vtxAVFbs_y = DEF_VAL_DOUBLE;
+  vtxAVFbs_z = DEF_VAL_DOUBLE;
+  pvtauvtx_genditauvtx_x = DEF_VAL_DOUBLE;
+  pvtauvtx_genditauvtx_y = DEF_VAL_DOUBLE;
+  pvtauvtx_genditauvtx_z = DEF_VAL_DOUBLE;
+  unbpv_KVF_genditauvtx_x = DEF_VAL_DOUBLE;
+  unbpv_KVF_genditauvtx_y = DEF_VAL_DOUBLE;
+  unbpv_KVF_genditauvtx_z = DEF_VAL_DOUBLE;  
   //dR
+  dR_recojettau_recotau = DEF_VAL_DOUBLE;
   dR_RecoGen = DEF_VAL_DOUBLE;
   dR_vtxDirGen = DEF_VAL_DOUBLE;
   //pftaugv
@@ -113,12 +149,25 @@ public:
   INIT_1DARRAY(pftauchhads_sIP2D_val,DEF_SIZE1D,DEF_VAL_DOUBLE);
   INIT_1DARRAY(pftauchhads_sIP2D_err,DEF_SIZE1D,DEF_VAL_DOUBLE);
   INIT_1DARRAY(pftauchhads_sIP2D_sig,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_IP3Ddv_val,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_IP3Ddv_err,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_IP3Ddv_sig,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_IP2Ddv_val,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_IP2Ddv_err,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_IP2Ddv_sig,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_sIP3Ddv_val,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_sIP3Ddv_err,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_sIP3Ddv_sig,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_sIP2Ddv_val,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_sIP2Ddv_err,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(pftauchhads_sIP2Ddv_sig,DEF_SIZE1D,DEF_VAL_DOUBLE);
   INIT_1DARRAY(pftauchhads_IP1D_val,DEF_SIZE1D,DEF_VAL_DOUBLE);
   INIT_1DARRAY(pftauchhads_IP1D_err,DEF_SIZE1D,DEF_VAL_DOUBLE);
   INIT_1DARRAY(pftauchhads_IP1D_sig,DEF_SIZE1D,DEF_VAL_DOUBLE);
   INIT_1DARRAY(pftauchhads_sIP1D_val,DEF_SIZE1D,DEF_VAL_DOUBLE);
   INIT_1DARRAY(pftauchhads_sIP1D_err,DEF_SIZE1D,DEF_VAL_DOUBLE);
   INIT_1DARRAY(pftauchhads_sIP1D_sig,DEF_SIZE1D,DEF_VAL_DOUBLE);
+  INIT_1DARRAY(dR_tautrk_recotau,DEF_SIZE1D,DEF_VAL_DOUBLE);
  } 
  /////
  //   Set branches
@@ -127,7 +176,34 @@ public:
   //Usefull
   tree->Branch("duno", &duno, "duno/D");
   tree->Branch("numrecovtcs", &numrecovtcs, "numrecovtcs/D");
+  //Vertex resolution
+  tree->Branch("genditauvtx_x", &genditauvtx_x, "genditauvtx_x/D");
+  tree->Branch("genditauvtx_y", &genditauvtx_y, "genditauvtx_y/D");
+  tree->Branch("genditauvtx_z", &genditauvtx_z, "genditauvtx_z/D");
+  tree->Branch("unbpv_KVF_nv", &unbpv_KVF_nv, "unbpv_KVF_nv/D");
+  tree->Branch("unbpv_KVFbs_nv", &unbpv_KVFbs_nv, "unbpv_KVFbs_nv/D");
+  tree->Branch("unbpv_AVF_nv", &unbpv_AVF_nv, "unbpv_AVF_nv/D");
+  tree->Branch("unbpv_AVFbs_nv", &unbpv_AVFbs_nv, "unbpv_AVFbs_nv/D");
+  tree->Branch("vtxKVF_x", &vtxKVF_x, "vtxKVF_x/D");
+  tree->Branch("vtxKVF_y", &vtxKVF_y, "vtxKVF_y/D");
+  tree->Branch("vtxKVF_z", &vtxKVF_z, "vtxKVF_z/D");
+  tree->Branch("vtxKVFbs_x", &vtxKVFbs_x, "vtxKVFbs_x/D");
+  tree->Branch("vtxKVFbs_y", &vtxKVFbs_y, "vtxKVFbs_y/D");
+  tree->Branch("vtxKVFbs_z", &vtxKVFbs_z, "vtxKVFbs_z/D");
+  tree->Branch("vtxAVF_x", &vtxAVF_x, "vtxAVF_x/D");
+  tree->Branch("vtxAVF_y", &vtxAVF_y, "vtxAVF_y/D");
+  tree->Branch("vtxAVF_z", &vtxAVF_z, "vtxAVF_z/D");
+  tree->Branch("vtxAVFbs_x", &vtxAVFbs_x, "vtxAVFbs_x/D");
+  tree->Branch("vtxAVFbs_y", &vtxAVFbs_y, "vtxAVFbs_y/D");
+  tree->Branch("vtxAVFbs_z", &vtxAVFbs_z, "vtxAVFbs_z/D");
+  tree->Branch("pvtauvtx_genditauvtx_x", &pvtauvtx_genditauvtx_x, "pvtauvtx_genditauvtx_x/D");
+  tree->Branch("pvtauvtx_genditauvtx_y", &pvtauvtx_genditauvtx_y, "pvtauvtx_genditauvtx_y/D");
+  tree->Branch("pvtauvtx_genditauvtx_z", &pvtauvtx_genditauvtx_z, "pvtauvtx_genditauvtx_z/D");
+  tree->Branch("unbpv_KVF_genditauvtx_x", &unbpv_KVF_genditauvtx_x, "unbpv_KVF_genditauvtx_x/D");
+  tree->Branch("unbpv_KVF_genditauvtx_y", &unbpv_KVF_genditauvtx_y, "unbpv_KVF_genditauvtx_y/D");
+  tree->Branch("unbpv_KVF_genditauvtx_z", &unbpv_KVF_genditauvtx_z, "unbpv_KVF_genditauvtx_z/D");
   //dR
+  tree->Branch("dR_recojettau_recotau", &dR_recojettau_recotau, "dR_recojettau_recotau/D");
   tree->Branch("dR_RecoGen", &dR_RecoGen, "dR_RecoGen/D");
   tree->Branch("dR_vtxDirGen", &dR_vtxDirGen, "dR_vtxDirGen/D");
   //pftaugv
@@ -164,12 +240,25 @@ public:
   tree->Branch("pftauchhads_sIP2D_val", &pftauchhads_sIP2D_val, "pftauchhads_sIP2D_val[pftauchhads_numv]/D");
   tree->Branch("pftauchhads_sIP2D_err", &pftauchhads_sIP2D_err, "pftauchhads_sIP2D_err[pftauchhads_numv]/D");
   tree->Branch("pftauchhads_sIP2D_sig", &pftauchhads_sIP2D_sig, "pftauchhads_sIP2D_sig[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_IP3Ddv_val", &pftauchhads_IP3Ddv_val, "pftauchhads_IP3Ddv_val[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_IP3Ddv_err", &pftauchhads_IP3Ddv_err, "pftauchhads_IP3Ddv_err[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_IP3Ddv_sig", &pftauchhads_IP3Ddv_sig, "pftauchhads_IP3Ddv_sig[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_IP2Ddv_val", &pftauchhads_IP2Ddv_val, "pftauchhads_IP2Ddv_val[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_IP2Ddv_err", &pftauchhads_IP2Ddv_err, "pftauchhads_IP2Ddv_err[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_IP2Ddv_sig", &pftauchhads_IP2Ddv_sig, "pftauchhads_IP2Ddv_sig[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_sIP3Ddv_val", &pftauchhads_sIP3Ddv_val, "pftauchhads_sIP3Ddv_val[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_sIP3Ddv_err", &pftauchhads_sIP3Ddv_err, "pftauchhads_sIP3Ddv_err[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_sIP3Ddv_sig", &pftauchhads_sIP3Ddv_sig, "pftauchhads_sIP3Ddv_sig[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_sIP2Ddv_val", &pftauchhads_sIP2Ddv_val, "pftauchhads_sIP2Ddv_val[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_sIP2Ddv_err", &pftauchhads_sIP2Ddv_err, "pftauchhads_sIP2Ddv_err[pftauchhads_numv]/D");
+  tree->Branch("pftauchhads_sIP2Ddv_sig", &pftauchhads_sIP2Ddv_sig, "pftauchhads_sIP2Ddv_sig[pftauchhads_numv]/D");
   tree->Branch("pftauchhads_IP1D_val", &pftauchhads_IP1D_val, "pftauchhads_IP1D_val[pftauchhads_numv]/D");
   tree->Branch("pftauchhads_IP1D_err", &pftauchhads_IP1D_err, "pftauchhads_IP1D_err[pftauchhads_numv]/D");
   tree->Branch("pftauchhads_IP1D_sig", &pftauchhads_IP1D_sig, "pftauchhads_IP1D_sig[pftauchhads_numv]/D");
   tree->Branch("pftauchhads_sIP1D_val", &pftauchhads_sIP1D_val, "pftauchhads_sIP1D_val[pftauchhads_numv]/D");
   tree->Branch("pftauchhads_sIP1D_err", &pftauchhads_sIP1D_err, "pftauchhads_sIP1D_err[pftauchhads_numv]/D");
   tree->Branch("pftauchhads_sIP1D_sig", &pftauchhads_sIP1D_sig, "pftauchhads_sIP1D_sig[pftauchhads_numv]/D");
+  tree->Branch("dR_tautrk_recotau", &dR_tautrk_recotau, "dR_tautrk_recotau[pftauchhads_numv]/D");
  }
  /////
  //   Set branch address
@@ -179,7 +268,34 @@ public:
   //Usefull
   tree->SetBranchAddress("duno", &duno);
   tree->SetBranchAddress("numrecovtcs", &numrecovtcs);
+  //Vertex resolution
+  tree->SetBranchAddress("genditauvtx_x", &genditauvtx_x);
+  tree->SetBranchAddress("genditauvtx_y", &genditauvtx_y);
+  tree->SetBranchAddress("genditauvtx_z", &genditauvtx_z);
+  tree->SetBranchAddress("unbpv_KVF_nv", &unbpv_KVF_nv);
+  tree->SetBranchAddress("unbpv_KVFbs_nv", &unbpv_KVFbs_nv);
+  tree->SetBranchAddress("unbpv_AVF_nv", &unbpv_AVF_nv);
+  tree->SetBranchAddress("unbpv_AVFbs_nv", &unbpv_AVFbs_nv);
+  tree->SetBranchAddress("vtxKVF_x", &vtxKVF_x);
+  tree->SetBranchAddress("vtxKVF_y", &vtxKVF_y);
+  tree->SetBranchAddress("vtxKVF_z", &vtxKVF_z);
+  tree->SetBranchAddress("vtxKVFbs_x", &vtxKVFbs_x);
+  tree->SetBranchAddress("vtxKVFbs_y", &vtxKVFbs_y);
+  tree->SetBranchAddress("vtxKVFbs_z", &vtxKVFbs_z);
+  tree->SetBranchAddress("vtxAVF_x", &vtxAVF_x);
+  tree->SetBranchAddress("vtxAVF_y", &vtxAVF_y);
+  tree->SetBranchAddress("vtxAVF_z", &vtxAVF_z);
+  tree->SetBranchAddress("vtxAVFbs_x", &vtxAVFbs_x);
+  tree->SetBranchAddress("vtxAVFbs_y", &vtxAVFbs_y);
+  tree->SetBranchAddress("vtxAVFbs_z", &vtxAVFbs_z);
+  tree->SetBranchAddress("pvtauvtx_genditauvtx_x", &pvtauvtx_genditauvtx_x);
+  tree->SetBranchAddress("pvtauvtx_genditauvtx_y", &pvtauvtx_genditauvtx_y);
+  tree->SetBranchAddress("pvtauvtx_genditauvtx_z", &pvtauvtx_genditauvtx_z);
+  tree->SetBranchAddress("unbpv_KVF_genditauvtx_x", &unbpv_KVF_genditauvtx_x);
+  tree->SetBranchAddress("unbpv_KVF_genditauvtx_y", &unbpv_KVF_genditauvtx_y);
+  tree->SetBranchAddress("unbpv_KVF_genditauvtx_z", &unbpv_KVF_genditauvtx_z);
   //dR
+  tree->SetBranchAddress("dR_recojettau_recotau", &dR_recojettau_recotau);
   tree->SetBranchAddress("dR_RecoGen", &dR_RecoGen);
   tree->SetBranchAddress("dR_vtxDirGen", &dR_vtxDirGen);
   //pftaugv
@@ -216,12 +332,25 @@ public:
   tree->SetBranchAddress("pftauchhads_sIP2D_val", &pftauchhads_sIP2D_val);
   tree->SetBranchAddress("pftauchhads_sIP2D_err", &pftauchhads_sIP2D_err);
   tree->SetBranchAddress("pftauchhads_sIP2D_sig", &pftauchhads_sIP2D_sig);
+  tree->SetBranchAddress("pftauchhads_IP3Ddv_val", &pftauchhads_IP3Ddv_val);
+  tree->SetBranchAddress("pftauchhads_IP3Ddv_err", &pftauchhads_IP3Ddv_err);
+  tree->SetBranchAddress("pftauchhads_IP3Ddv_sig", &pftauchhads_IP3Ddv_sig);
+  tree->SetBranchAddress("pftauchhads_IP2Ddv_val", &pftauchhads_IP2Ddv_val);
+  tree->SetBranchAddress("pftauchhads_IP2Ddv_err", &pftauchhads_IP2Ddv_err);
+  tree->SetBranchAddress("pftauchhads_IP2Ddv_sig", &pftauchhads_IP2Ddv_sig);
+  tree->SetBranchAddress("pftauchhads_sIP3Ddv_val", &pftauchhads_sIP3Ddv_val);
+  tree->SetBranchAddress("pftauchhads_sIP3Ddv_err", &pftauchhads_sIP3Ddv_err);
+  tree->SetBranchAddress("pftauchhads_sIP3Ddv_sig", &pftauchhads_sIP3Ddv_sig);
+  tree->SetBranchAddress("pftauchhads_sIP2Ddv_val", &pftauchhads_sIP2Ddv_val);
+  tree->SetBranchAddress("pftauchhads_sIP2Ddv_err", &pftauchhads_sIP2Ddv_err);
+  tree->SetBranchAddress("pftauchhads_sIP2Ddv_sig", &pftauchhads_sIP2Ddv_sig);
   tree->SetBranchAddress("pftauchhads_IP1D_val", &pftauchhads_IP1D_val);
   tree->SetBranchAddress("pftauchhads_IP1D_err", &pftauchhads_IP1D_err);
   tree->SetBranchAddress("pftauchhads_IP1D_sig", &pftauchhads_IP1D_sig);
   tree->SetBranchAddress("pftauchhads_sIP1D_val", &pftauchhads_sIP1D_val);
   tree->SetBranchAddress("pftauchhads_sIP1D_err", &pftauchhads_sIP1D_err);
   tree->SetBranchAddress("pftauchhads_sIP1D_sig", &pftauchhads_sIP1D_sig);
+  tree->SetBranchAddress("dR_tautrk_recotau", &dR_tautrk_recotau);
  }
 };
 #endif

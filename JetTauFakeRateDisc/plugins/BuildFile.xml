@@ -6,6 +6,7 @@
 <use name="RecoTauTag/RecoTau"/>
 
 <use name="RecoVertex/KalmanVertexFit"/>
+<use name="RecoVertex/AdaptiveVertexFit"/>
 <use name="DataFormats/TrackReco"/>
 <use name="FWCore/ServiceRegistry"/>
 <use name="CommonTools/UtilAlgos"/>

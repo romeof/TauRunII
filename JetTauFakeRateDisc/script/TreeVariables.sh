@@ -12,8 +12,11 @@
 varType=double
 varTYPE=DOUBLE
 capLetter=D
-varList=(numrecovtcs)
-varLast=numrecovtcs
+varList=(unbpv_KVF_nv unbpv_KVFbs_nv unbpv_AVF_nv unbpv_AVFbs_nv)
+#vtxKVF_x vtxKVF_y vtxKVF_z vtxKVFbs_x vtxKVFbs_y vtxKVFbs_z vtxAVF_x vtxAVF_y vtxAVF_z vtxAVFbs_x vtxAVFbs_y vtxAVFbs_z)
+#genditauvtx_x genditauvtx_y genditauvtx_z)
+#pvtauvtx_genditauvtx_x pvtauvtx_genditauvtx_y pvtauvtx_genditauvtx_z unbpv_genditauvtx_x unbpv_genditauvtx_y unbpv_genditauvtx_z)
+varLast=
 varNum=ele_num
 varCount=gl
 #Print info

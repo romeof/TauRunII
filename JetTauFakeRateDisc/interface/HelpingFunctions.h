@@ -33,7 +33,6 @@ int MatchRecoTauhGenTauh(const PFTau& pftau, const Event& iEvent){
  }//End Matching with VisGenTau
  return posgenmatchedcand;
 }
-
 //RecoTauh - GenJet matching
 int MatchRecoTauhGenJet(const PFTau& pftau, const Event& iEvent){
  int posgenmatchedcand = -1;
@@ -51,4 +50,28 @@ int MatchRecoTauhGenJet(const PFTau& pftau, const Event& iEvent){
   }
  }
  return posgenmatchedcand;  
+}
+//Access the ditau vertex at gen level (from Christian Veelken)
+void Get_genEventVertex(const Event& iEvent, double& genditauvtx_x, double& genditauvtx_y, double& genditauvtx_z){
+ Handle<vector<GenParticle> > genParts;
+ iEvent.getByLabel("genParticles", genParts);
+ const reco::GenParticle* genTauPlus  = 0;
+ const reco::GenParticle* genTauMinus = 0;
+ for ( reco::GenParticleCollection::const_iterator genParticle = genParts->begin();
+       genParticle != genParts->end(); ++genParticle ) {
+   if ( genParticle->pdgId() == -15 && !genTauPlus  ) genTauPlus  = &(*genParticle);
+   if ( genParticle->pdgId() == +15 && !genTauMinus ) genTauMinus = &(*genParticle);
+   if ( genTauPlus && genTauMinus ) break;
+ }
+ if ( !(genTauPlus && genTauMinus) ) {
+   edm::LogError ("Tau3ProngTrackRecoAnalyzer::analyze")
+     << " Failed to find generator level Tau leptons --> skipping !!";
+   return;
+ }
+ assert(TMath::Abs(genTauPlus->vertex().x() - genTauMinus->vertex().x()) < 1.e-3);
+ assert(TMath::Abs(genTauPlus->vertex().y() - genTauMinus->vertex().y()) < 1.e-3);
+ assert(TMath::Abs(genTauPlus->vertex().z() - genTauMinus->vertex().z()) < 1.e-2);
+ genditauvtx_x = 0.5*(genTauPlus->vertex().x() + genTauMinus->vertex().x());
+ genditauvtx_y = 0.5*(genTauPlus->vertex().y() + genTauMinus->vertex().y());
+ genditauvtx_z = 0.5*(genTauPlus->vertex().z() + genTauMinus->vertex().z());
 }
