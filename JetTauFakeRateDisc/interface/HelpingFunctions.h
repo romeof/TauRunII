@@ -3,6 +3,9 @@
 using namespace reco;
 using namespace edm;
 using namespace std;
+/////
+//   Matching between reco candidates and gen counterpart
+/////
 //RecoTauh - GenTauh matching
 int MatchRecoTauhGenTauh(const PFTau& pftau, const Event& iEvent){
  int posgenmatchedcand = -1;
@@ -51,7 +54,9 @@ int MatchRecoTauhGenJet(const PFTau& pftau, const Event& iEvent){
  }
  return posgenmatchedcand;  
 }
-//Access the ditau vertex at gen level (from Christian Veelken)
+/////
+//   Access the ditau vertex at gen level (from Christian Veelken)
+/////
 void Get_genEventVertex(const Event& iEvent, double& genditauvtx_x, double& genditauvtx_y, double& genditauvtx_z){
  Handle<vector<GenParticle> > genParts;
  iEvent.getByLabel("genParticles", genParts);
@@ -74,4 +79,18 @@ void Get_genEventVertex(const Event& iEvent, double& genditauvtx_x, double& gend
  genditauvtx_x = 0.5*(genTauPlus->vertex().x() + genTauMinus->vertex().x());
  genditauvtx_y = 0.5*(genTauPlus->vertex().y() + genTauMinus->vertex().y());
  genditauvtx_z = 0.5*(genTauPlus->vertex().z() + genTauMinus->vertex().z());
+}
+/////
+//   Track quality requirements 
+/////
+bool is_goodtrk(const Track* trk, const reco::Vertex& vtx){
+ bool isgoodtrk = false;
+ if(trk->pt()>1 &&
+   trk->hitPattern().numberOfValidHits()>=8 &&
+   trk->hitPattern().numberOfValidPixelHits()>=2 &&
+   trk->normalizedChi2()<5 &&
+   std::abs(trk->dxy(vtx.position()))<0.2 &&
+   std::abs(trk->dz(vtx.position()))<17
+   ) isgoodtrk = true;
+ return isgoodtrk;
 }

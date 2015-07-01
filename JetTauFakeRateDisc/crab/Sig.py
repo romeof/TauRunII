@@ -2,8 +2,8 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 
 config.section_('General')
-config.General.requestName = 'Tau_GGHTauTau_AVFbs2trks_VS_DefVtx_2'
-config.General.workArea    = 'Tau_GGHTauTau_AVFbs2trks_VS_DefVtx_2'
+config.General.requestName = 'Tau_GGHTauTau_FligtDistChi2'
+config.General.workArea    = 'Tau_GGHTauTau_FligtDistChi2'
 
 config.section_('JobType')
 config.JobType.pluginName = 'Analysis'

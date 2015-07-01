@@ -12,7 +12,10 @@
 varType=double
 varTYPE=DOUBLE
 capLetter=D
-varList=(unbpv_KVF_nv unbpv_KVFbs_nv unbpv_AVF_nv unbpv_AVFbs_nv)
+varList=(pv_avfbs_nchi2 unbpv_avfbs_nchi2 diff_pv_avfbs_nchi2_unbpv_avfbs_nchi2)
+#pvsv_dist3d_val pvsv_dist2d_val pvsv_dist3d_sig pvsv_dist2d_sig)
+#recojettau_pt recojettau_eta recojettau_phi recojettau_en)
+#unbpv_KVF_nv unbpv_KVFbs_nv unbpv_AVF_nv unbpv_AVFbs_nv)
 #vtxKVF_x vtxKVF_y vtxKVF_z vtxKVFbs_x vtxKVFbs_y vtxKVFbs_z vtxAVF_x vtxAVF_y vtxAVF_z vtxAVFbs_x vtxAVFbs_y vtxAVFbs_z)
 #genditauvtx_x genditauvtx_y genditauvtx_z)
 #pvtauvtx_genditauvtx_x pvtauvtx_genditauvtx_y pvtauvtx_genditauvtx_z unbpv_genditauvtx_x unbpv_genditauvtx_y unbpv_genditauvtx_z)
