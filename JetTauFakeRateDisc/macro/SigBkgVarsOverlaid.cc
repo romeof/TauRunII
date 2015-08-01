@@ -33,13 +33,61 @@ using namespace std;
 /////
 //   Declare constants
 /////
-const string path      = "";
-const char *samples[]  = {"Qcd", "Tau"};
+const string path      = "/home/francescoromeovb/Shared_win_ubu_/Work/JetTauFakeRateDisc/AEIP1D_2/";
+const char *samples[]  = {"Tau"};
 const string selection = "";
 const int numvar       = 100;
 
+const char *varfirst[]        = {"pftauchhads_AEsIP1D_val_trk0", "pftauchhads_AEIP1D_x_val_trk0", "pftauchhads_AEIP1D_y_val_trk0"};
+const char *varsecond[]       = {"1", "1", "1"};
+const char *vartitle[]        = {"signed IP1D (z-axis)", "signed IP1D (x-axis)", "signed IP1D (y-axis)"};
+const double inRange[numvar]  = {-0.05,-0.05,-0.05};
+const double endRange[numvar] = {0.05,0.05,0.05};
+const int    bin[numvar]      = {100,100,100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+
+//Difference of IP3D minus IP2D+IP1D
 /*
+const char *varfirst[]        = {"pftauchhads_IP3DvalAE_2DAE_1DAE_trk0", "pftauchhads_IP3DvalAE_2DTE_1DAE_trk0", "pftauchhads_IP3DvalAE_2DTE_1DTE_trk0"};
+const char *varsecond[]       = {"1", "1", "1"};
+const char *vartitle[]        = {"AE_IP3D - #sqrt{AE_IP2D^{2}+AE_IP1D^{2}}", "AE_IP3D - #sqrt{TE_IP2D^{2}+AE_IP1D^{2}}", "AE_IP3D - #sqrt{TE_IP2D^{2}+TE_IP1D^{2}}"};
+const double inRange[numvar]  = {-5,-5,-5};
+const double endRange[numvar] = {5,5,5};
+const int    bin[numvar]      = {50,50,50};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+//TauVSTauJet
+/*
+const char *varfirst[]        = {"tau_pt_DIV_recojettau_pt"};
+const char *varsecond[]       = {"1"};
+const char *vartitle[]        = {"pT_{#tau}/pT_{jet#tau}"};
+const double inRange[numvar]  = {0};
+const double endRange[numvar] = {1};
+const int    bin[numvar]      = {50};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
 //Impact parameters
+/*
+const char *varfirst[]        = {"pftauchhads_IP3D_val_trk0", "pftauchhads_AEIP1D_val_trk0", "pftauchhads_IP3D_sig_trk0", "pftauchhads_AEIP1D_sig_trk0"};
+const char *varsecond[]       = {"1", "1", "1", "1", "1", "1"};
+const char *vartitle[]        = {"sIP3D val trk0", "AEsIP1D val trk0", "sIP3D sig trk0", "AEsIP1D sig trk0"};
+const double inRange[numvar]  = {0,0,0,0,0,0};
+//const double inRange[numvar]  = {-0.05,-0.05,-10,-10};
+const double endRange[numvar] = {0.05,0.05,10,10};
+const int    bin[numvar]      = {100,100,100,100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+/*
 const char *varfirst[]        = {"pftauchhads_sIP3D_val_trk0", "pftauchhads_sIP2D_val_trk0", "pftauchhads_sIP1D_val_trk0", "pftauchhads_sIP3D_sig_trk0", "pftauchhads_sIP2D_sig_trk0", "pftauchhads_sIP1D_sig_trk0"};
 const char *varsecond[]       = {"1", "1", "1", "1", "1", "1"};
 const char *vartitle[]        = {"sIP3D val trk0", "sIP2D val trk0", "sIP1D val trk0", "sIP3D sig trk0", "sIP2D sig trk0", "sIP1D sig trk0"};
@@ -79,6 +127,7 @@ double setmaximum = 100;
 */
 
 //Tau Collimation
+/*
 const char *varfirst[]        = {"dR_tautrk_recotau_trk0", "dR_tautrk_recotau_trk1", "dR_tautrk_recotau_trk2"};//, "pftauchhads_JTD_val_trk0", "pftauchhads_JTD_val_trk1", "pftauchhads_JTD_val_trk2"};
 const char *varsecond[]       = {"1", "1", "1", "1", "1", "1"};
 const char *vartitle[]        = {"dR(Trk0,RecoTau)", "dR(Trk1,RecoTau)", "dR(Trk2,RecoTau)", "dist(Trk0,RecoTau)", "dist(Trk1,RecoTau)", "dist(Trk2,RecoTau)",};
@@ -88,7 +137,7 @@ const int    bin[numvar]      = {100,100,100,100,100,100,100};
 bool ylogscale    = true;
 double setminimum = 0.1;
 double setmaximum = 100;
-
+*/
 //Vertex compatibility
 /*
 const char *varfirst[]        = {"diff_pv_avfbs_nchi2_unbpv_avfbs_nchi2"};
@@ -184,7 +233,7 @@ void SigBkgVarsOverlaid(){
  const uint variables_size = varfirsts.size();
  for(uint vars=0; vars<variables_size; vars++)
  {
-  TCanvas* c1 = new TCanvas(vartitles[vars].c_str(),vartitles[vars].c_str(),200,200,600,500);
+  TCanvas* c1 = new TCanvas(vartitles[vars].c_str(),vartitles[vars].c_str(),200,200,800,800);
   if(ylogscale) c1->SetLogy();
   TLegend *leg = new TLegend(0.7, 0.7, 0.9, 0.9);
   leg->SetBorderSize(0);
@@ -220,7 +269,7 @@ void SigBkgVarsOverlaid(){
    tree->SetBranchAddress(varseconds[vars].c_str(),&second);
    tree->SetBranchAddress("pftauchhads_num", &pftauchhads_num);
    //for(int en=0; en<tree->GetEntries(); en++)
-   for(int en=0; en<250000; en++)
+   for(int en=0; en<100000; en++)
    {
     tree->GetEntry(en);
     //if(first==-999 || first==0) continue;
@@ -260,7 +309,7 @@ void SigBkgVarsOverlaid(){
     gStyle->SetStatFontSize(0.1); //Vertical Size
    }
    if(smp==0){
-    leg->AddEntry(hist,"Jet","L"); 
+    leg->AddEntry(hist,"Tau","L"); 
     hist->SetMinimum(setminimum);
     hist->SetMaximum(setmaximum);
     hist->Draw(""); 

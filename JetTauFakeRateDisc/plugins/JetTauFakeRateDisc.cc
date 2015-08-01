@@ -80,6 +80,7 @@
 #include "TauRunII/JetTauFakeRateDisc/interface/TreeVariables.h"
 #include "TauRunII/JetTauFakeRateDisc/interface/HelpingFunctions.h"
 #include "TauRunII/JetTauFakeRateDisc/interface/VertexRefit.h"
+#include "TauRunII/JetTauFakeRateDisc/interface/TauVSTauJet.h"
 #include "TauRunII/JetTauFakeRateDisc/interface/Collimation.h"
 #include "TauRunII/JetTauFakeRateDisc/interface/LifeTime.h"
 /////
@@ -254,17 +255,21 @@ void JetTauFakeRateDisc::analyze(const edm::Event& iEvent, const edm::EventSetup
   double dR_RecoGen = ROOT::Math::VectorUtil::DeltaR(recotaujet_lv, gentaujet_lv);
   tree->dR_RecoGen  = dR_RecoGen;  
   /////
-  //   Reco tau vs its jets 
+  //   Reco tau vs its jets (fuctions implemented in interface/TauVSTauJet.h)
   /////
   const PFJetRef& recojettau = pftau.jetRef();
   tree->recojettau_pt  = recojettau->pt();
   tree->recojettau_eta = recojettau->eta();
   tree->recojettau_phi = recojettau->phi();
   tree->recojettau_en  = recojettau->energy();
-  //Multiplicity of jet constituent
-  //const vector<reco::PFCandidatePtr>& sigpfchhadcands2 = 
-  //int recojettau_n = recojettau->getJetConstituents().size();
-  //cout<<"Num constituents"<<setw(20)<<sigpfchhadcands.size()<<setw(20)<<recojettau_n<<endl;
+  tree->tau_pt_DIV_recojettau_pt = pftau.pt()/recojettau->pt();
+  tree->tau_en_DIV_recojettau_en = pftau.energy()/recojettau->energy();
+  tree->tau_trk0_pt_DIV_recojettau_pt = ratio_tau_trkn_pt_recojettau_pt(pftau,0);
+  tree->tau_trk1_pt_DIV_recojettau_pt = ratio_tau_trkn_pt_recojettau_pt(pftau,1);
+  tree->tau_trk2_pt_DIV_recojettau_pt = ratio_tau_trkn_pt_recojettau_pt(pftau,2);
+  tree->tau_trk0_en_DIV_recojettau_en = ratio_tau_trkn_en_recojettau_en(pftau,0);
+  tree->tau_trk1_en_DIV_recojettau_en = ratio_tau_trkn_en_recojettau_en(pftau,1);
+  tree->tau_trk2_en_DIV_recojettau_en = ratio_tau_trkn_en_recojettau_en(pftau,2);
   //dR between reco tau and its associated jet
   double dR_recojettau_recotau = deltaR(recojettau->eta(), recojettau->phi(), pftau.eta(), pftau.phi());
   tree->dR_recojettau_recotau = dR_recojettau_recotau;
@@ -275,6 +280,10 @@ void JetTauFakeRateDisc::analyze(const edm::Event& iEvent, const edm::EventSetup
   tree->dR_tautrk_recotau_trk0 = dR_tautrk_recotau(pftau,0);
   tree->dR_tautrk_recotau_trk1 = dR_tautrk_recotau(pftau,1);
   tree->dR_tautrk_recotau_trk2 = dR_tautrk_recotau(pftau,2);
+  //dR between tau constituent and reco jet tau
+  tree->dR_tautrk_recojettau_trk0 = dR_tautrk_recojettau(pftau,0);
+  tree->dR_tautrk_recojettau_trk1 = dR_tautrk_recojettau(pftau,1);
+  tree->dR_tautrk_recojettau_trk2 = dR_tautrk_recojettau(pftau,2);
   //Distance between tau constituent and reco tau
   tree->pftauchhads_JTD_val_trk0 = JTD_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0);
   tree->pftauchhads_JTD_val_trk1 = JTD_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,1);
@@ -311,7 +320,7 @@ void JetTauFakeRateDisc::analyze(const edm::Event& iEvent, const edm::EventSetup
   tree->pftauchhads_IP2D_sig_trk2  = IP2D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,2);
   tree->pftauchhads_sIP2D_val_trk2 = sIP2D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,2);
   tree->pftauchhads_sIP2D_sig_trk2 = sIP2D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,2);
-  //IP1D
+  //IP1D (Using the most common definitions of CMSSW (i.e.: with TransverseImpactPointExtrapolator))
   tree->pftauchhads_IP1D_val_trk0  = IP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,0);
   tree->pftauchhads_IP1D_sig_trk0  = IP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,0);
   tree->pftauchhads_sIP1D_val_trk0 = sIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0);
@@ -324,6 +333,37 @@ void JetTauFakeRateDisc::analyze(const edm::Event& iEvent, const edm::EventSetup
   tree->pftauchhads_IP1D_sig_trk2  = IP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,2);
   tree->pftauchhads_sIP1D_val_trk2 = sIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,2);
   tree->pftauchhads_sIP1D_sig_trk2 = sIP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,2);
+  //IP1D (Using AnalyticalImpactPointExtrapolator (below for trk0 only, but it is rather easy to get it for trk1,2))
+  tree->pftauchhads_AEIP1D_val_trk0  = AEIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,0);  
+  tree->pftauchhads_AEIP1D_sig_trk0  = AEIP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,0);  
+  tree->pftauchhads_AEsIP1D_val_trk0 = AEsIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0);  
+  tree->pftauchhads_AEsIP1D_sig_trk0 = AEsIP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0);   
+  //Study on IP1D
+  tree->pftauchhads_AEIP1D_x_val_trk0  = AEsIP1D_x_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0);
+  tree->pftauchhads_AEIP1D_y_val_trk0  = AEsIP1D_y_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0);
+  double IP3DvalAE = 0;
+  double IP3DvalTE = 0;
+  double IP2DvalAE = 0;
+  double IP2DvalTE = 0;
+  double IP1DvalAE = 0;
+  double IP1DvalTE = 0;
+  double tempIPerr = 0; double tempIPsig = 0; double tempsIPval = 0; double tempsIPerr = 0; double tempsIPsig = 0;
+  AEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,IP3DvalAE,tempIPerr,tempIPsig,tempsIPval,tempsIPerr,tempsIPsig,3,0);
+  TEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,IP3DvalTE,tempIPerr,tempIPsig,tempsIPval,tempsIPerr,tempsIPsig,3,0);
+  AEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,IP2DvalAE,tempIPerr,tempIPsig,tempsIPval,tempsIPerr,tempsIPsig,2,0);
+  TEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,IP2DvalTE,tempIPerr,tempIPsig,tempsIPval,tempsIPerr,tempsIPsig,2,0);
+  AEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,IP1DvalAE,tempIPerr,tempIPsig,tempsIPval,tempsIPerr,tempsIPsig,1,0);
+  TEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,IP1DvalTE,tempIPerr,tempIPsig,tempsIPval,tempsIPerr,tempsIPsig,1,0);
+  tree->pftauchhads_IP3DvalAE_trk0 = IP3DvalAE;
+  tree->pftauchhads_IP3DvalTE_trk0 = IP3DvalTE;
+  tree->pftauchhads_IP2DvalAE_trk0 = IP2DvalAE;
+  tree->pftauchhads_IP2DvalTE_trk0 = IP2DvalTE;
+  tree->pftauchhads_IP1DvalAE_trk0 = IP1DvalAE;
+  tree->pftauchhads_IP1DvalTE_trk0 = IP1DvalTE;
+  tree->pftauchhads_IP3DvalAE_2DTE_1DAE_trk0 = IP3DvalAE-sqrt(pow(IP2DvalTE,2)+pow(IP1DvalAE,2));
+  tree->pftauchhads_IP3DvalAE_2DTE_1DTE_trk0 = IP3DvalAE-sqrt(pow(IP2DvalTE,2)+pow(IP1DvalTE,2));
+  tree->pftauchhads_IP3DvalAE_2DAE_1DAE_trk0 = IP3DvalAE-sqrt(pow(IP2DvalAE,2)+pow(IP1DvalAE,2));
+  tree->pftauchhads_IP3DvalTE_2DTE_1DTE_trk0 = IP3DvalTE-sqrt(pow(IP2DvalTE,2)+pow(IP1DvalTE,2));
   //DecayLenght3D
   tree->pftauchhads_sDL3D_val_trk0 = sDL3D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0);
   tree->pftauchhads_sDL3D_val_trk1 = sDL3D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,1);
@@ -343,6 +383,8 @@ void JetTauFakeRateDisc::analyze(const edm::Event& iEvent, const edm::EventSetup
   tree->pftau_pvsv_dist2d_val = abs_pvsv_dist2d_val(pftau,*ttrkbuilder,unbpv_AVFbs,taudecvtx,pftaugv);
   tree->pftau_pvsv_dist3d_sig = abs_pvsv_dist3d_sig(pftau,*ttrkbuilder,unbpv_AVFbs,taudecvtx,pftaugv);
   tree->pftau_pvsv_dist2d_sig = abs_pvsv_dist2d_sig(pftau,*ttrkbuilder,unbpv_AVFbs,taudecvtx,pftaugv);
+  //dR_TauFlightDist_JetAxis
+  tree->dR_TauFlightDist_JetAxis = dR_TauFlightDist_JetAxis(pftau,taudecvtx,unbpv_AVFbs,pftaugv);
   //Chi2PV - Chi2PVnonTauTrks
   TransientVertex refittedpv_AVFbs = refitted_vertex_AVFbs(iEvent,pv,*ttrkbuilder);
   TransientVertex unbiasedpv_AVFbs = unbiased_vertex_AVFbs(iEvent,pv,*ttrkbuilder,pftau);
@@ -416,8 +458,10 @@ void JetTauFakeRateDisc::fillDescriptions(edm::ConfigurationDescriptions& descri
 }
 //define this as a plug-in
 DEFINE_FWK_MODULE(JetTauFakeRateDisc);
-//Checks
-  //cout<<pftau.pt()<<setw(15)<<pftau.eta()<<setw(15)<<pftau.decayMode()<<setw(15)<<posgenmatchedcand<<endl;  
+/////
+//   Checks
+/////
+   //cout<<pftau.pt()<<setw(15)<<pftau.eta()<<setw(15)<<pftau.decayMode()<<setw(15)<<posgenmatchedcand<<endl;  
    //cout<<p<<setw(15)<<cand->pt()<<setw(15)<<cand->eta()<<setw(15)<<cand->phi()<<setw(15)<<cand->charge()<<endl;
    //cout<<p<<setw(15)<<candtrk->pt()<<setw(15)<<candtrk->eta()<<setw(15)<<candtrk->phi()<<setw(15)<<candtrk->charge()<<endl;
    //cout<<"Lead val"<<endl;
@@ -443,3 +487,96 @@ DEFINE_FWK_MODULE(JetTauFakeRateDisc);
   //cout<<setw(20)<<"PV-unbKVF"<<setw(20)<<fabs(pv.position().x()-unbpv_KVF.position().x())<<setw(40)<<fabs(pv.position().y()-unbpv_KVF.position().y())<<setw(40)<<fabs(pv.position().z()-unbpv_KVF.position().z())<<endl;
   //cout<<setw(20)<<refittedpv_AVFbs.totalChiSquared()<<setw(20)<<tv.totalChiSquared()<<setw(20)<<refittedpv_AVFbs.degreesOfFreedom()<<setw(20)<<tv.degreesOfFreedom()<<endl;
   //cout<<setw(20)<<Vertex(refittedpv_AVFbs).chi2()<<setw(20)<<Vertex(tv).chi2()<<setw(20)<<Vertex(refittedpv_AVFbs).ndof()<<setw(20)<<Vertex(tv).ndof()<<endl;
+/////
+//   Multiplicity of jet constituent
+/////
+  //const vector<reco::PFCandidatePtr>& sigpfchhadcands2 = 
+  //int recojettau_n = recojettau->getJetConstituents().size();
+  //cout<<"Num constituents"<<setw(20)<<sigpfchhadcands.size()<<setw(20)<<recojettau_n<<endl;
+/////
+//   Study of the definition of IP1D 
+/////
+  //cout<<"IP "<<setw(20)<<"3D"<<setw(20)<<"1D"<<endl;
+  //cout<<"Val"<<setw(20)<<IP3D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,0)<<setw(20)<<IP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,0)<<endl;
+  //cout<<"Sig"<<setw(20)<<IP3D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,0)<<setw(20)<<IP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,0)<<endl;
+  //cout<<endl;
+  /*
+  double pftauchhads_AEIP1D_val = 0;
+  double pftauchhads_AEIP1D_err = 0;
+  double pftauchhads_AEIP1D_sig = 0;
+  double pftauchhads_AEsIP1D_val = 0;
+  double pftauchhads_AEsIP1D_err = 0;
+  double pftauchhads_AEsIP1D_sig = 0; 
+  AEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,pftauchhads_AEIP1D_val,pftauchhads_AEIP1D_err,pftauchhads_AEIP1D_sig,pftauchhads_AEsIP1D_val,pftauchhads_AEsIP1D_err,pftauchhads_AEsIP1D_sig,1,0);
+  double pftauchhads_TEIP1D_val = 0;
+  double pftauchhads_TEIP1D_err = 0;
+  double pftauchhads_TEIP1D_sig = 0;
+  double pftauchhads_TEsIP1D_val = 0;
+  double pftauchhads_TEsIP1D_err = 0;
+  double pftauchhads_TEsIP1D_sig = 0; 
+  TEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,pftauchhads_TEIP1D_val,pftauchhads_TEIP1D_err,pftauchhads_TEIP1D_sig,pftauchhads_TEsIP1D_val,pftauchhads_TEsIP1D_err,pftauchhads_TEsIP1D_sig,1,0);
+  double pftauchhads_zIP1D_val = 0;
+  double pftauchhads_zIP1D_err = 0;
+  double pftauchhads_zIP1D_sig = 0;
+  double pftauchhads_zsIP1D_val = 0;
+  double pftauchhads_zsIP1D_err = 0;
+  double pftauchhads_zsIP1D_sig = 0; 
+  zIP1D(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,pftauchhads_zIP1D_val,pftauchhads_zIP1D_err,pftauchhads_zIP1D_sig,pftauchhads_zsIP1D_val,pftauchhads_zsIP1D_err,pftauchhads_zsIP1D_sig,0);
+  cout<<"IP1D"<<setw(20)<<"standard"<<setw(20)<<"TE"<<setw(20)<<"AE"<<setw(20)<<"zIP"<<endl;
+  cout<<"Val "<<setw(20)<<sIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0)<<setw(20)<<pftauchhads_TEsIP1D_val<<setw(20)<<pftauchhads_AEsIP1D_val<<setw(20)<<pftauchhads_zsIP1D_val<<endl;
+  cout<<"Sig "<<setw(20)<<sIP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0)<<setw(20)<<pftauchhads_TEsIP1D_sig<<setw(20)<<pftauchhads_AEsIP1D_sig<<setw(20)<<pftauchhads_zsIP1D_sig<<endl;
+  //Different definitions of IP1D used in CMSSW (Be carefull you are using the same vertex)
+  //const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+  //PFCandidatePtr cand = sigpfchhadcands[0];
+  //const Track* trk = cand->bestTrack();
+  //cout<<setw(20)<<"Perigree"<<setw(20)<<"trk.dz(PV)"<<setw(20)<<"zIP"<<setw(20)<<"trk.vtx.z-vtx.z"<<endl;//trk.vtx.z-vtx.z seems diff
+  //cout<<setw(20)<<IP1D_val_trkn(pftau,*ttrkbuilder,pv,0)<<setw(20)<<trk->dz(pv.position())<<setw(20)<<pftauchhads_zIP1D_val<<setw(20)<<abs(trk->vertex().z()-pv.position().z())<<endl;
+  double pftauchhads_AEIP2D_val = 0;
+  double pftauchhads_AEIP2D_err = 0;
+  double pftauchhads_AEIP2D_sig = 0;
+  double pftauchhads_AEsIP2D_val = 0;
+  double pftauchhads_AEsIP2D_err = 0;
+  double pftauchhads_AEsIP2D_sig = 0; 
+  AEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,pftauchhads_AEIP2D_val,pftauchhads_AEIP2D_err,pftauchhads_AEIP2D_sig,pftauchhads_AEsIP2D_val,pftauchhads_AEsIP2D_err,pftauchhads_AEsIP2D_sig,2,0);
+  double pftauchhads_TEIP2D_val = 0;
+  double pftauchhads_TEIP2D_err = 0;
+  double pftauchhads_TEIP2D_sig = 0;
+  double pftauchhads_TEsIP2D_val = 0;
+  double pftauchhads_TEsIP2D_err = 0;
+  double pftauchhads_TEsIP2D_sig = 0; 
+  TEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,pftauchhads_TEIP2D_val,pftauchhads_TEIP2D_err,pftauchhads_TEIP2D_sig,pftauchhads_TEsIP2D_val,pftauchhads_TEsIP2D_err,pftauchhads_TEsIP2D_sig,2,0);
+  cout<<"sIP2D"<<setw(20)<<"standard"<<setw(20)<<"TE"<<setw(20)<<"AE"<<endl;
+  cout<<"Val "<<setw(20)<<sIP2D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0)<<setw(20)<<pftauchhads_TEsIP2D_val<<setw(20)<<pftauchhads_AEsIP2D_val<<endl;
+  cout<<"Sig "<<setw(20)<<sIP2D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0)<<setw(20)<<pftauchhads_TEsIP2D_sig<<setw(20)<<pftauchhads_AEsIP2D_sig<<endl;
+  double pftauchhads_AEIP3D_val = 0;
+  double pftauchhads_AEIP3D_err = 0;
+  double pftauchhads_AEIP3D_sig = 0;
+  double pftauchhads_AEsIP3D_val = 0;
+  double pftauchhads_AEsIP3D_err = 0;
+  double pftauchhads_AEsIP3D_sig = 0; 
+  AEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,pftauchhads_AEIP3D_val,pftauchhads_AEIP3D_err,pftauchhads_AEIP3D_sig,pftauchhads_AEsIP3D_val,pftauchhads_AEsIP3D_err,pftauchhads_AEsIP3D_sig,3,0);
+  double pftauchhads_TEIP3D_val = 0;
+  double pftauchhads_TEIP3D_err = 0;
+  double pftauchhads_TEIP3D_sig = 0;
+  double pftauchhads_TEsIP3D_val = 0;
+  double pftauchhads_TEsIP3D_err = 0;
+  double pftauchhads_TEsIP3D_sig = 0; 
+  TEIP_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,pftauchhads_TEIP3D_val,pftauchhads_TEIP3D_err,pftauchhads_TEIP3D_sig,pftauchhads_TEsIP3D_val,pftauchhads_TEsIP3D_err,pftauchhads_TEsIP3D_sig,3,0);
+  cout<<"sIP3D"<<setw(20)<<"standard"<<setw(20)<<"TE"<<setw(20)<<"AE"<<endl;
+  cout<<"Val "<<setw(20)<<sIP3D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0)<<setw(20)<<pftauchhads_TEsIP3D_val<<setw(20)<<pftauchhads_AEsIP3D_val<<endl;
+  cout<<"Sig "<<setw(20)<<sIP3D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0)<<setw(20)<<pftauchhads_TEsIP3D_sig<<setw(20)<<pftauchhads_AEsIP3D_sig<<endl;
+  //AEIP1D   
+  tree->pftauchhads_AEIP1D_val_trk0  = AEIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,0);
+  tree->pftauchhads_AEIP1D_val_trk1  = AEIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,1);
+  tree->pftauchhads_AEIP1D_val_trk2  = AEIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,2);
+  tree->pftauchhads_AEIP1D_sig_trk0  = AEIP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,0);
+  tree->pftauchhads_AEIP1D_sig_trk1  = AEIP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,1);
+  tree->pftauchhads_AEIP1D_sig_trk2  = AEIP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,2);
+  tree->pftauchhads_AEsIP1D_val_trk0 = AEsIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0);
+  tree->pftauchhads_AEsIP1D_val_trk1 = AEsIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,1);
+  tree->pftauchhads_AEsIP1D_val_trk2 = AEsIP1D_val_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,2);
+  tree->pftauchhads_AEsIP1D_sig_trk0 = AEsIP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,0);
+  tree->pftauchhads_AEsIP1D_sig_trk1 = AEsIP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,1);
+  tree->pftauchhads_AEsIP1D_sig_trk2 = AEsIP1D_sig_trkn(pftau,*ttrkbuilder,unbpv_AVFbs,pftaugv,2);
+  */
+

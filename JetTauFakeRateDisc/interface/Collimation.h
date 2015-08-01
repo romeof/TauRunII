@@ -26,6 +26,25 @@ double dR_tautrk_recotau(const PFTau& pftau, uint n){
  dR = deltaR(cand->eta(), cand->phi(), pftau.eta(), pftau.phi());
  return dR;
 }
+//dR between tau constituent and reco jet tau
+double dR_tautrk_recojettau(const PFTau& pftau, uint n){
+ double dR = 0;
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()<=n) return dR;
+ PFCandidatePtr cand = sigpfchhadcands[n];
+ const PFJetRef& recojettau = pftau.jetRef();
+ dR = deltaR(cand->eta(), cand->phi(), recojettau->eta(), recojettau->phi());
+ return dR;
+}
+//dR between TauFlight_dist and JetAxis
+double dR_TauFlightDist_JetAxis(const PFTau& pftau, Vertex decvtx, Vertex Pvtx, GlobalVector JetAxis){
+ double dR = 0;
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()<=1) return dR;
+ GlobalVector TauFlightDist(decvtx.position().x()-Pvtx.position().x(), decvtx.position().y()-Pvtx.position().y(), decvtx.position().z()-Pvtx.position().z());
+ dR = deltaR(TauFlightDist, JetAxis);
+ return dR;
+}
 //The JTD value
 double JTD_val_trkn(const PFTau& pftau, const TransientTrackBuilder& ttrkbuilder, Vertex vtx, GlobalVector gv, uint n){
  double JTD = -9999;

@@ -23,7 +23,7 @@ using namespace std;
 /////
 //   Implementation of IP variables considering a function for each variables (as required by Tau POG) 
 /////
-//The 3D IP value for the pT-leading track of the reco tauh
+//The 3D IP value 
 double IP3D_val_trkn(const PFTau& pftau, const TransientTrackBuilder& ttrkbuilder, Vertex vtx, uint n){
  double IP = 0;
  const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
@@ -151,7 +151,7 @@ double sIP2D_sig_trkn(const PFTau& pftau, const TransientTrackBuilder& ttrkbuild
 }
 //The 1D sIP value (Our own implementation, to be checked)
 double sIP1D_val_trkn(const PFTau& pftau, const TransientTrackBuilder& ttrkbuilder, Vertex vtx, GlobalVector gv, uint n){
- double IP = -9999;
+ double IP = 0;
  const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
  if(sigpfchhadcands.size()<=n) return IP;
  PFCandidatePtr cand = sigpfchhadcands[n];
@@ -172,7 +172,7 @@ double sIP1D_val_trkn(const PFTau& pftau, const TransientTrackBuilder& ttrkbuild
 }
 //The 1D sIP significance (Our own implementation, to be checked)
 double sIP1D_sig_trkn(const PFTau& pftau, const TransientTrackBuilder& ttrkbuilder, Vertex vtx, GlobalVector gv, uint n){
- double IP = -9999;
+ double IP = 0;
  const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
  if(sigpfchhadcands.size()<=n) return IP;
  PFCandidatePtr cand = sigpfchhadcands[n];
@@ -191,6 +191,198 @@ double sIP1D_sig_trkn(const PFTau& pftau, const TransientTrackBuilder& ttrkbuild
  double prod = IPVec.dot(gv);
  double sign = (prod>=0) ? 1. : -1.;
  IP = sign*IP_abs;
+ return IP;
+}
+//AEIP1D_val_trkn
+double AEIP1D_val_trkn(const PFTau& pftau,const TransientTrackBuilder& ttrkbuilder,Vertex vtx,uint n){
+ double IP = 0;
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()<=n) return IP;
+ PFCandidatePtr cand = sigpfchhadcands[n];
+ const Track* trk = cand->bestTrack();
+ if(!trk) return IP;
+ //Take the value
+ TransientTrack ttrk = ttrkbuilder.build(&*trk);
+ AnalyticalImpactPointExtrapolator extrapolator(ttrk.field());
+ GlobalPoint vert(vtx.position().x(),vtx.position().y(),vtx.position().z());
+ TrajectoryStateOnSurface tsos = extrapolator.extrapolate(ttrk.impactPointState(),vert);
+ GlobalPoint refPoint          = tsos.globalPosition();
+ GlobalError refPointErr       = tsos.cartesianError().position();
+ GlobalPoint vertexPosition    = RecoVertex::convertPos(vtx.position());
+ GlobalError vertexPositionErr = RecoVertex::convertError(vtx.error());
+ GlobalVector diff = refPoint-vertexPosition;
+ AlgebraicVector3 vDiff;
+ vDiff[0] = 0;
+ vDiff[1] = 0;
+ vDiff[2] = diff.z();
+ IP = sqrt(pow(vDiff[0],2)+pow(vDiff[1],2)+pow(vDiff[2],2));
+ return IP;
+}
+//AEIP1D_sig_trkn
+double AEIP1D_sig_trkn(const PFTau& pftau,const TransientTrackBuilder& ttrkbuilder,Vertex vtx,uint n){
+ double IP = 0;
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()<=n) return IP;
+ PFCandidatePtr cand = sigpfchhadcands[n];
+ const Track* trk = cand->bestTrack();
+ if(!trk) return IP;
+ //Take the value
+ TransientTrack ttrk = ttrkbuilder.build(&*trk);
+ AnalyticalImpactPointExtrapolator extrapolator(ttrk.field());
+ GlobalPoint vert(vtx.position().x(),vtx.position().y(),vtx.position().z());
+ TrajectoryStateOnSurface tsos = extrapolator.extrapolate(ttrk.impactPointState(),vert);
+ GlobalPoint refPoint          = tsos.globalPosition();
+ GlobalError refPointErr       = tsos.cartesianError().position();
+ GlobalPoint vertexPosition    = RecoVertex::convertPos(vtx.position());
+ GlobalError vertexPositionErr = RecoVertex::convertError(vtx.error());
+ GlobalVector diff = refPoint-vertexPosition;
+ AlgebraicVector3 vDiff;
+ vDiff[0] = 0;
+ vDiff[1] = 0;
+ vDiff[2] = diff.z();
+ double IP_val = sqrt(pow(vDiff[0],2)+pow(vDiff[1],2)+pow(vDiff[2],2));
+ //Error
+ AlgebraicSymMatrix33 error = refPointErr.matrix()+vertexPositionErr.matrix();
+ double err2    = ROOT::Math::Similarity(error,vDiff);
+ double IP_err  = 0;
+ if(IP_val!=0)  IP_err = sqrt(err2)/IP_val;
+ IP = IP_val/IP_err;
+ return IP;
+}
+//AEsIP1D_val_trkn
+double AEsIP1D_val_trkn(const PFTau& pftau,const TransientTrackBuilder& ttrkbuilder,Vertex vtx,GlobalVector gv,uint n){
+ double IP = 0;
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()<=n) return IP;
+ PFCandidatePtr cand = sigpfchhadcands[n];
+ const Track* trk = cand->bestTrack();
+ if(!trk) return IP;
+ //Take the value
+ TransientTrack ttrk = ttrkbuilder.build(&*trk);
+ AnalyticalImpactPointExtrapolator extrapolator(ttrk.field());
+ GlobalPoint vert(vtx.position().x(),vtx.position().y(),vtx.position().z());
+ TrajectoryStateOnSurface tsos = extrapolator.extrapolate(ttrk.impactPointState(),vert);
+ GlobalPoint refPoint          = tsos.globalPosition();
+ GlobalError refPointErr       = tsos.cartesianError().position();
+ GlobalPoint vertexPosition    = RecoVertex::convertPos(vtx.position());
+ GlobalError vertexPositionErr = RecoVertex::convertError(vtx.error());
+ GlobalVector diff = refPoint-vertexPosition;
+ AlgebraicVector3 vDiff;
+ vDiff[0] = 0;
+ vDiff[1] = 0;
+ vDiff[2] = diff.z();
+ double IP_val = sqrt(pow(vDiff[0],2)+pow(vDiff[1],2)+pow(vDiff[2],2));
+ //Sign
+ double IPVec_x = refPoint.x()-vtx.position().x();
+ double IPVec_y = refPoint.y()-vtx.position().y();
+ double IPVec_z = refPoint.z()-vtx.position().z();
+ GlobalVector IPVec(IPVec_x,IPVec_y,IPVec_z);
+ double prod  = IPVec.dot(gv);
+ double sign  = (prod>=0) ? 1. : -1.;
+ IP = sign*IP_val;
+ return IP;
+}
+//AEsIP1D_sig_trkn
+double AEsIP1D_sig_trkn(const PFTau& pftau,const TransientTrackBuilder& ttrkbuilder,Vertex vtx,GlobalVector gv,uint n){
+ double IP = 0;
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()<=n) return IP;
+ PFCandidatePtr cand = sigpfchhadcands[n];
+ const Track* trk = cand->bestTrack();
+ if(!trk) return IP;
+ //Take the value
+ TransientTrack ttrk = ttrkbuilder.build(&*trk);
+ AnalyticalImpactPointExtrapolator extrapolator(ttrk.field());
+ GlobalPoint vert(vtx.position().x(),vtx.position().y(),vtx.position().z());
+ TrajectoryStateOnSurface tsos = extrapolator.extrapolate(ttrk.impactPointState(),vert);
+ GlobalPoint refPoint          = tsos.globalPosition();
+ GlobalError refPointErr       = tsos.cartesianError().position();
+ GlobalPoint vertexPosition    = RecoVertex::convertPos(vtx.position());
+ GlobalError vertexPositionErr = RecoVertex::convertError(vtx.error());
+ GlobalVector diff = refPoint-vertexPosition;
+ AlgebraicVector3 vDiff;
+ vDiff[0] = 0;
+ vDiff[1] = 0;
+ vDiff[2] = diff.z();
+ double IP_val = sqrt(pow(vDiff[0],2)+pow(vDiff[1],2)+pow(vDiff[2],2));
+ //Error
+ AlgebraicSymMatrix33 error = refPointErr.matrix()+vertexPositionErr.matrix();
+ double err2    = ROOT::Math::Similarity(error,vDiff);
+ double IP_err  = 0;
+ if(IP_val!=0)  IP_err = sqrt(err2)/IP_val;
+ double IP_sig  = IP_val/IP_err;
+ //Sign
+ double IPVec_x = refPoint.x()-vtx.position().x();
+ double IPVec_y = refPoint.y()-vtx.position().y();
+ double IPVec_z = refPoint.z()-vtx.position().z();
+ GlobalVector IPVec(IPVec_x,IPVec_y,IPVec_z);
+ double prod  = IPVec.dot(gv);
+ double sign  = (prod>=0) ? 1. : -1.;
+ IP = sign*IP_sig;
+ return IP;
+}
+double AEsIP1D_x_val_trkn(const PFTau& pftau,const TransientTrackBuilder& ttrkbuilder,Vertex vtx,GlobalVector gv,uint n){
+ double IP = 0;
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()<=n) return IP;
+ PFCandidatePtr cand = sigpfchhadcands[n];
+ const Track* trk = cand->bestTrack();
+ if(!trk) return IP;
+ //Take the value
+ TransientTrack ttrk = ttrkbuilder.build(&*trk);
+ AnalyticalImpactPointExtrapolator extrapolator(ttrk.field());
+ GlobalPoint vert(vtx.position().x(),vtx.position().y(),vtx.position().z());
+ TrajectoryStateOnSurface tsos = extrapolator.extrapolate(ttrk.impactPointState(),vert);
+ GlobalPoint refPoint          = tsos.globalPosition();
+ GlobalError refPointErr       = tsos.cartesianError().position();
+ GlobalPoint vertexPosition    = RecoVertex::convertPos(vtx.position());
+ GlobalError vertexPositionErr = RecoVertex::convertError(vtx.error());
+ GlobalVector diff = refPoint-vertexPosition;
+ AlgebraicVector3 vDiff;
+ vDiff[0] = diff.x();
+ vDiff[1] = 0;
+ vDiff[2] = 0;
+ double IP_val = sqrt(pow(vDiff[0],2)+pow(vDiff[1],2)+pow(vDiff[2],2));
+ //Sign
+ double IPVec_x = refPoint.x()-vtx.position().x();
+ double IPVec_y = 0;
+ double IPVec_z = 0;
+ GlobalVector IPVec(IPVec_x,IPVec_y,IPVec_z);
+ double prod  = IPVec.dot(gv);
+ double sign  = (prod>=0) ? 1. : -1.;
+ IP = sign*IP_val;
+ return IP;
+}
+double AEsIP1D_y_val_trkn(const PFTau& pftau,const TransientTrackBuilder& ttrkbuilder,Vertex vtx,GlobalVector gv,uint n){
+ double IP = 0;
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()<=n) return IP;
+ PFCandidatePtr cand = sigpfchhadcands[n];
+ const Track* trk = cand->bestTrack();
+ if(!trk) return IP;
+ //Take the value
+ TransientTrack ttrk = ttrkbuilder.build(&*trk);
+ AnalyticalImpactPointExtrapolator extrapolator(ttrk.field());
+ GlobalPoint vert(vtx.position().x(),vtx.position().y(),vtx.position().z());
+ TrajectoryStateOnSurface tsos = extrapolator.extrapolate(ttrk.impactPointState(),vert);
+ GlobalPoint refPoint          = tsos.globalPosition();
+ GlobalError refPointErr       = tsos.cartesianError().position();
+ GlobalPoint vertexPosition    = RecoVertex::convertPos(vtx.position());
+ GlobalError vertexPositionErr = RecoVertex::convertError(vtx.error());
+ GlobalVector diff = refPoint-vertexPosition;
+ AlgebraicVector3 vDiff;
+ vDiff[0] = 0;
+ vDiff[1] = diff.y();
+ vDiff[2] = 0;
+ double IP_val = sqrt(pow(vDiff[0],2)+pow(vDiff[1],2)+pow(vDiff[2],2));
+ //Sign
+ double IPVec_x = 0;
+ double IPVec_y = refPoint.y()-vtx.position().y();
+ double IPVec_z = 0;
+ GlobalVector IPVec(IPVec_x,IPVec_y,IPVec_z);
+ double prod  = IPVec.dot(gv);
+ double sign  = (prod>=0) ? 1. : -1.;
+ IP = sign*IP_val;
  return IP;
 }
 /////
@@ -397,7 +589,6 @@ void IP1D(const Track* trk,const TransientTrackBuilder& ttrkbuilder, Vertex vtx,
  pftauchhads_IP1D_sig = pftauchhads_IP1D_val/pftauchhads_IP1D_err; 
  //Take sign
  AnalyticalImpactPointExtrapolator extrapolator(ttrk.field());
- //GlobalPoint vertexPosition = RecoVertex::convertPos(vtx.position());
  TrajectoryStateOnSurface closestIn3DSpaceState = extrapolator.extrapolate(ttrk.impactPointState(),vert);
  GlobalPoint impactPoint = closestIn3DSpaceState.globalPosition();
  GlobalVector IPVec(0,0,impactPoint.z()-vtx.position().z());
@@ -406,6 +597,133 @@ void IP1D(const Track* trk,const TransientTrackBuilder& ttrkbuilder, Vertex vtx,
  pftauchhads_sIP1D_val = sign*pftauchhads_IP1D_val; 
  pftauchhads_sIP1D_err = sign*pftauchhads_IP1D_err;
  pftauchhads_sIP1D_sig = sign*pftauchhads_IP1D_sig;
+}
+void zIP1D(const PFTau& pftau,const TransientTrackBuilder& ttrkbuilder,Vertex vtx,GlobalVector gv,double& pftauchhads_IP1D_val,double& pftauchhads_IP1D_err,double& pftauchhads_IP1D_sig, double& pftauchhads_sIP1D_val,double& pftauchhads_sIP1D_err,double& pftauchhads_sIP1D_sig,uint n){
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()>n){
+  PFCandidatePtr cand = sigpfchhadcands[n];
+  const Track* trk = cand->bestTrack();  
+  if(trk){
+   TransientTrack ttrk = ttrkbuilder.build(&*trk);
+   SignedTransverseImpactParameter stip;
+   pftauchhads_IP1D_val  = fabs(stip.zImpactParameter(ttrk,gv,vtx).second.value());  
+   pftauchhads_IP1D_err  = fabs(stip.zImpactParameter(ttrk,gv,vtx).second.error());  
+   pftauchhads_IP1D_sig  = fabs(stip.zImpactParameter(ttrk,gv,vtx).second.significance());  
+   pftauchhads_sIP1D_val = stip.zImpactParameter(ttrk,gv,vtx).second.value();  
+   pftauchhads_sIP1D_err = stip.zImpactParameter(ttrk,gv,vtx).second.error();  
+   pftauchhads_sIP1D_sig = stip.zImpactParameter(ttrk,gv,vtx).second.significance();  
+  }//if(trk)
+ }//if(sigpfchhadcands.size()>=n)
+}
+void TEIP_trkn(const PFTau& pftau, const TransientTrackBuilder& ttrkbuilder,Vertex vtx,GlobalVector gv,double& pftauchhads_IP_val,double& pftauchhads_IP_err,double& pftauchhads_IP_sig, double& pftauchhads_sIP_val,double& pftauchhads_sIP_err,double& pftauchhads_sIP_sig,int dimension,uint n){
+ //Take value
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()>n){
+  PFCandidatePtr cand = sigpfchhadcands[n];
+  const Track* trk = cand->bestTrack();  
+  if(trk){
+   TransientTrack ttrk = ttrkbuilder.build(&*trk);
+   TransverseImpactPointExtrapolator extrapolator(ttrk.field());
+   GlobalPoint vert(vtx.position().x(),vtx.position().y(),vtx.position().z());
+   TrajectoryStateOnSurface tsos = extrapolator.extrapolate(ttrk.impactPointState(),vert);
+   GlobalPoint refPoint          = tsos.globalPosition();
+   GlobalError refPointErr       = tsos.cartesianError().position();
+   GlobalPoint vertexPosition    = RecoVertex::convertPos(vtx.position());
+   GlobalError vertexPositionErr = RecoVertex::convertError(vtx.error());
+   //Error
+   AlgebraicSymMatrix33 error = refPointErr.matrix()+vertexPositionErr.matrix();
+   GlobalVector diff          = refPoint-vertexPosition;
+   AlgebraicVector3 vDiff;
+   double IPVec_x = 0;
+   double IPVec_y = 0;
+   double IPVec_z = 0;
+   if(dimension==1){
+    vDiff[0] = 0;
+    vDiff[1] = 0;
+    vDiff[2] = diff.z();
+    IPVec_z = refPoint.z()-vtx.position().z();
+   }else if(dimension==2){
+    vDiff[0] = diff.x();
+    vDiff[1] = diff.y();
+    vDiff[2] = 0;
+    IPVec_x = refPoint.x()-vtx.position().x();
+    IPVec_y = refPoint.y()-vtx.position().y();
+   }else if(dimension==3){
+    vDiff[0] = diff.x();
+    vDiff[1] = diff.y();
+    vDiff[2] = diff.z();
+    IPVec_x = refPoint.x()-vtx.position().x();
+    IPVec_y = refPoint.y()-vtx.position().y();
+    IPVec_z = refPoint.z()-vtx.position().z();
+   }
+   pftauchhads_IP_val = sqrt(pow(vDiff[0],2)+pow(vDiff[1],2)+pow(vDiff[2],2));
+   double err2  = ROOT::Math::Similarity(error,vDiff);
+   if(pftauchhads_IP_val!=0) pftauchhads_IP_err = sqrt(err2)/pftauchhads_IP_val;
+   pftauchhads_IP_sig  = pftauchhads_IP_val/pftauchhads_IP_err;
+   //Sign
+   GlobalVector IPVec(IPVec_x,IPVec_y,IPVec_z);
+   double prod = IPVec.dot(gv);
+   double sign = (prod>=0) ? 1. : -1.;
+   pftauchhads_sIP_val = sign*pftauchhads_IP_val;
+   pftauchhads_sIP_err = sign*pftauchhads_IP_err;
+   pftauchhads_sIP_sig = sign*pftauchhads_IP_sig;
+  }//if(trk)
+ }//if(sigpfchhadcands.size()>=n)
+}
+void AEIP_trkn(const PFTau& pftau, const TransientTrackBuilder& ttrkbuilder,Vertex vtx,GlobalVector gv,double& pftauchhads_IP_val,double& pftauchhads_IP_err,double& pftauchhads_IP_sig, double& pftauchhads_sIP_val,double& pftauchhads_sIP_err,double& pftauchhads_sIP_sig,int dimension,uint n){
+ const vector<reco::PFCandidatePtr>& sigpfchhadcands = pftau.signalPFChargedHadrCands();
+ if(sigpfchhadcands.size()>n){
+  PFCandidatePtr cand = sigpfchhadcands[n];
+  const Track* trk = cand->bestTrack();  
+  if(trk){
+   //Take value
+   TransientTrack ttrk = ttrkbuilder.build(&*trk);
+   AnalyticalImpactPointExtrapolator extrapolator(ttrk.field());
+   GlobalPoint vert(vtx.position().x(),vtx.position().y(),vtx.position().z());
+   TrajectoryStateOnSurface tsos = extrapolator.extrapolate(ttrk.impactPointState(),vert);
+   GlobalPoint refPoint          = tsos.globalPosition();
+   GlobalError refPointErr       = tsos.cartesianError().position();
+   GlobalPoint vertexPosition    = RecoVertex::convertPos(vtx.position());
+   GlobalError vertexPositionErr = RecoVertex::convertError(vtx.error());
+   //Error
+   AlgebraicSymMatrix33 error = refPointErr.matrix()+vertexPositionErr.matrix();
+   GlobalVector diff          = refPoint-vertexPosition;
+   AlgebraicVector3 vDiff;
+   double IPVec_x = 0;
+   double IPVec_y = 0;
+   double IPVec_z = 0;
+   if(dimension==1){
+    vDiff[0] = 0;
+    vDiff[1] = 0;
+    vDiff[2] = diff.z();
+    IPVec_z = refPoint.z()-vtx.position().z();
+   }else if(dimension==2){
+    vDiff[0] = diff.x();
+    vDiff[1] = diff.y();
+    vDiff[2] = 0;
+    IPVec_x = refPoint.x()-vtx.position().x();
+    IPVec_y = refPoint.y()-vtx.position().y();
+   }else if(dimension==3){
+    vDiff[0] = diff.x();
+    vDiff[1] = diff.y();
+    vDiff[2] = diff.z();
+    IPVec_x = refPoint.x()-vtx.position().x();
+    IPVec_y = refPoint.y()-vtx.position().y();
+    IPVec_z = refPoint.z()-vtx.position().z();
+   }
+   pftauchhads_IP_val = sqrt(pow(vDiff[0],2)+pow(vDiff[1],2)+pow(vDiff[2],2));
+   double err2  = ROOT::Math::Similarity(error,vDiff);
+   if(pftauchhads_IP_val!=0) pftauchhads_IP_err = sqrt(err2)/pftauchhads_IP_val;
+   pftauchhads_IP_sig  = pftauchhads_IP_val/pftauchhads_IP_err;
+   //Sign
+   GlobalVector IPVec(IPVec_x,IPVec_y,IPVec_z);
+   double prod = IPVec.dot(gv);
+   double sign = (prod>=0) ? 1. : -1.;
+   pftauchhads_sIP_val = sign*pftauchhads_IP_val;
+   pftauchhads_sIP_err = sign*pftauchhads_IP_err;
+   pftauchhads_sIP_sig = sign*pftauchhads_IP_sig;
+  }//if(trk)
+ }//if(sigpfchhadcands.size()>=n)
 }
 //Tau flight distance
 double abs_pvsv_dist3d_val(const PFTau& pftau, const TransientTrackBuilder& ttrkbuilder, Vertex vtx, Vertex taudecvtx, GlobalVector gv){
@@ -428,30 +746,3 @@ double abs_pvsv_dist2d_sig(const PFTau& pftau, const TransientTrackBuilder& ttrk
  if(taudecvtx.isValid()) pvsv_dist2d_sig = SecondaryVertex::computeDist2d(vtx,taudecvtx,gv,true).significance();
  return fabs(pvsv_dist2d_sig);
 }
-/*
- cout<<"3DVal"<<endl;
- cout<<IPTools::signedImpactParameter3D(ttrk,gv,vtx).second.value()<<setw(20)<<IPTools::signedImpactParameter3D(ttrk,gv,vtx).second.significance()<<endl;
- SignedImpactParameter3D sip3d;
- cout<<sip3d.apply(ttrk,gv,vtx).second.value()<<setw(20)<<sip3d.apply(ttrk,gv,vtx).second.significance()<<endl;
- cout<<"2DVal"<<endl;
- cout<<IP<<setw(20)<<IPTools::signedTransverseImpactParameter(ttrk,gv,vtx).second.significance()<<endl;
- SignedTransverseImpactParameter stip;
- cout<<stip.apply(ttrk,gv,vtx).second.value()<<setw(20)<<stip.apply(ttrk,gv,vtx).second.significance()<<endl;
-
- cout<<"1DVal"<<endl;
- cout<<sign*IP_val<<setw(20)<<IP<<endl;
- SignedTransverseImpactParameter stip;
- cout<<stip.zImpactParameter(ttrk,gv,vtx).second.value()<<setw(20)<<stip.zImpactParameter(ttrk,gv,vtx).second.significance()<<endl;
-
- SignedImpactParameter3D sip3d;
- cout<<"Sum"<<endl;
- double i3 = sip3d.apply(ttrk,gv,vtx).second.value();
- double i2 = stip.apply(ttrk,gv,vtx).second.value();
- double i1 = stip.zImpactParameter(ttrk,gv,vtx).second.value();
- cout<<sqrt((i2*i2)+(i1*i1))<<setw(20)<<i3<<endl;
-
- cout<<"the 3 ip"<<endl;
- cout<<"3d"<<setw(20)<<sip3d.apply(ttrk,gv,vtx).second.value()<<setw(20)<<sip3d.apply(ttrk,gv,vtx).second.error()<<setw(20)<<sip3d.apply(ttrk,gv,vtx).second.significance()<<endl;
- cout<<"2d"<<setw(20)<<stip.apply(ttrk,gv,vtx).second.value()<<setw(20)<<stip.apply(ttrk,gv,vtx).second.error()<<setw(20)<<stip.apply(ttrk,gv,vtx).second.significance()<<endl;
- cout<<"1d"<<setw(20)<<stip.zImpactParameter(ttrk,gv,vtx).second.value()<<setw(20)<<stip.zImpactParameter(ttrk,gv,vtx).second.error()<<setw(20)<<stip.zImpactParameter(ttrk,gv,vtx).second.significance()<<endl;
-*/

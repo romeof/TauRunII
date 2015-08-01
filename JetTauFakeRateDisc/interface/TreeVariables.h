@@ -59,11 +59,14 @@ public:
  double pvtauvtx_genditauvtx_x, pvtauvtx_genditauvtx_y, pvtauvtx_genditauvtx_z, unbpv_KVF_genditauvtx_x, unbpv_KVF_genditauvtx_y, unbpv_KVF_genditauvtx_z;
  //RecoJetTau
  double recojettau_pt, recojettau_eta, recojettau_phi, recojettau_en; 
+ double tau_pt_DIV_recojettau_pt, tau_en_DIV_recojettau_en, tau_trk0_pt_DIV_recojettau_pt, tau_trk1_pt_DIV_recojettau_pt, tau_trk2_pt_DIV_recojettau_pt, tau_trk0_en_DIV_recojettau_en, tau_trk1_en_DIV_recojettau_en, tau_trk2_en_DIV_recojettau_en;
  //dR
  double dR_recojettau_recotau;
+ double dR_tautrk_recojettau_trk0, dR_tautrk_recojettau_trk1, dR_tautrk_recojettau_trk2;
  double dR_RecoGen;
  double dR_vtxDirGen;
  double dR_tautrk_recotau_trk0, dR_tautrk_recotau_trk1, dR_tautrk_recotau_trk2;
+ double dR_TauFlightDist_JetAxis;
  //pftaugv
  double pftaugv_x;
  double pftaugv_y;
@@ -78,16 +81,24 @@ public:
  double pftauchhads_IP2D_sig_trk0, pftauchhads_IP2D_sig_trk1, pftauchhads_IP2D_sig_trk2;
  double pftauchhads_IP1D_val_trk0, pftauchhads_IP1D_val_trk1, pftauchhads_IP1D_val_trk2;
  double pftauchhads_IP1D_sig_trk0, pftauchhads_IP1D_sig_trk1, pftauchhads_IP1D_sig_trk2;
+ double pftauchhads_AEIP1D_val_trk0, pftauchhads_AEIP1D_val_trk1, pftauchhads_AEIP1D_val_trk2;
+ double pftauchhads_AEIP1D_sig_trk0, pftauchhads_AEIP1D_sig_trk1, pftauchhads_AEIP1D_sig_trk2;
  double pftauchhads_sIP3D_val_trk0, pftauchhads_sIP3D_val_trk1, pftauchhads_sIP3D_val_trk2;
  double pftauchhads_sIP3D_sig_trk0, pftauchhads_sIP3D_sig_trk1, pftauchhads_sIP3D_sig_trk2;
  double pftauchhads_sIP2D_val_trk0, pftauchhads_sIP2D_val_trk1, pftauchhads_sIP2D_val_trk2;
  double pftauchhads_sIP2D_sig_trk0, pftauchhads_sIP2D_sig_trk1, pftauchhads_sIP2D_sig_trk2;
  double pftauchhads_sIP1D_val_trk0, pftauchhads_sIP1D_val_trk1, pftauchhads_sIP1D_val_trk2;
  double pftauchhads_sIP1D_sig_trk0, pftauchhads_sIP1D_sig_trk1, pftauchhads_sIP1D_sig_trk2;
+ double pftauchhads_AEsIP1D_val_trk0, pftauchhads_AEsIP1D_val_trk1, pftauchhads_AEsIP1D_val_trk2;
+ double pftauchhads_AEsIP1D_sig_trk0, pftauchhads_AEsIP1D_sig_trk1, pftauchhads_AEsIP1D_sig_trk2;
  double pftauchhads_sDL3D_val_trk0, pftauchhads_sDL3D_val_trk1, pftauchhads_sDL3D_val_trk2;
  double pftauchhads_sDL3D_sig_trk0, pftauchhads_sDL3D_sig_trk1, pftauchhads_sDL3D_sig_trk2;
  double pftauchhads_absDL3D_val_trk0, pftauchhads_absDL3D_val_trk1, pftauchhads_absDL3D_val_trk2;
  double pftauchhads_absDL3D_sig_trk0, pftauchhads_absDL3D_sig_trk1, pftauchhads_absDL3D_sig_trk2;
+ //Compare Analytical Extrapolator (AE) vs Transverse Extrapolator (TE)
+ double pftauchhads_AEIP1D_x_val_trk0, pftauchhads_AEIP1D_y_val_trk0, pftauchhads_IP3DvalAE_trk0, pftauchhads_IP3DvalTE_trk0, pftauchhads_IP2DvalAE_trk0, pftauchhads_IP2DvalTE_trk0, pftauchhads_IP1DvalAE_trk0, pftauchhads_IP1DvalTE_trk0;
+ double pftauchhads_IP3DvalAE_2DTE_1DAE_trk0, pftauchhads_IP3DvalAE_2DTE_1DTE_trk0, pftauchhads_IP3DvalAE_2DAE_1DAE_trk0, pftauchhads_IP3DvalTE_2DTE_1DTE_trk0;
+ //Collimation
  double pftauchhads_JTD_val_trk0, pftauchhads_JTD_val_trk1, pftauchhads_JTD_val_trk2;
  double pftauchhads_JTD_sig_trk0, pftauchhads_JTD_sig_trk1, pftauchhads_JTD_sig_trk2;
  double pftau_pvsv_dist3d_val, pftau_pvsv_dist2d_val, pftau_pvsv_dist3d_sig, pftau_pvsv_dist2d_sig; 
@@ -139,13 +150,25 @@ public:
   recojettau_eta = DEF_VAL_DOUBLE;
   recojettau_phi = DEF_VAL_DOUBLE;
   recojettau_en  = DEF_VAL_DOUBLE;
+  tau_pt_DIV_recojettau_pt = DEF_VAL_DOUBLE;
+  tau_en_DIV_recojettau_en = DEF_VAL_DOUBLE;
+  tau_trk0_pt_DIV_recojettau_pt = DEF_VAL_DOUBLE;
+  tau_trk1_pt_DIV_recojettau_pt = DEF_VAL_DOUBLE;
+  tau_trk2_pt_DIV_recojettau_pt = DEF_VAL_DOUBLE;
+  tau_trk0_en_DIV_recojettau_en = DEF_VAL_DOUBLE;
+  tau_trk1_en_DIV_recojettau_en = DEF_VAL_DOUBLE;
+  tau_trk2_en_DIV_recojettau_en = DEF_VAL_DOUBLE;
   //dR
   dR_recojettau_recotau = DEF_VAL_DOUBLE;
+  dR_tautrk_recojettau_trk0 = DEF_VAL_DOUBLE;
+  dR_tautrk_recojettau_trk1 = DEF_VAL_DOUBLE;
+  dR_tautrk_recojettau_trk2 = DEF_VAL_DOUBLE;
   dR_RecoGen = DEF_VAL_DOUBLE;
   dR_vtxDirGen = DEF_VAL_DOUBLE;
   dR_tautrk_recotau_trk0 = DEF_VAL_DOUBLE;
   dR_tautrk_recotau_trk1 = DEF_VAL_DOUBLE;
   dR_tautrk_recotau_trk2 = DEF_VAL_DOUBLE;
+  dR_TauFlightDist_JetAxis = DEF_VAL_DOUBLE;
   //pftaugv
   pftaugv_x = DEF_VAL_DOUBLE;
   pftaugv_y = DEF_VAL_DOUBLE;
@@ -178,6 +201,12 @@ public:
   pftauchhads_IP1D_sig_trk0 = DEF_VAL_DOUBLE;
   pftauchhads_IP1D_sig_trk1 = DEF_VAL_DOUBLE;
   pftauchhads_IP1D_sig_trk2 = DEF_VAL_DOUBLE;
+  pftauchhads_AEIP1D_val_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_AEIP1D_val_trk1 = DEF_VAL_DOUBLE;
+  pftauchhads_AEIP1D_val_trk2 = DEF_VAL_DOUBLE;
+  pftauchhads_AEIP1D_sig_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_AEIP1D_sig_trk1 = DEF_VAL_DOUBLE;
+  pftauchhads_AEIP1D_sig_trk2 = DEF_VAL_DOUBLE;
   pftauchhads_sIP3D_val_trk0 = DEF_VAL_DOUBLE;
   pftauchhads_sIP3D_val_trk1 = DEF_VAL_DOUBLE;
   pftauchhads_sIP3D_val_trk2 = DEF_VAL_DOUBLE;
@@ -196,6 +225,12 @@ public:
   pftauchhads_sIP1D_sig_trk0 = DEF_VAL_DOUBLE;
   pftauchhads_sIP1D_sig_trk1 = DEF_VAL_DOUBLE;
   pftauchhads_sIP1D_sig_trk2 = DEF_VAL_DOUBLE;
+  pftauchhads_AEsIP1D_val_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_AEsIP1D_val_trk1 = DEF_VAL_DOUBLE;
+  pftauchhads_AEsIP1D_val_trk2 = DEF_VAL_DOUBLE;
+  pftauchhads_AEsIP1D_sig_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_AEsIP1D_sig_trk1 = DEF_VAL_DOUBLE;
+  pftauchhads_AEsIP1D_sig_trk2 = DEF_VAL_DOUBLE;
   pftauchhads_sDL3D_val_trk0 = DEF_VAL_DOUBLE;
   pftauchhads_sDL3D_val_trk1 = DEF_VAL_DOUBLE;
   pftauchhads_sDL3D_val_trk2 = DEF_VAL_DOUBLE;
@@ -208,6 +243,20 @@ public:
   pftauchhads_absDL3D_sig_trk0 = DEF_VAL_DOUBLE;
   pftauchhads_absDL3D_sig_trk1 = DEF_VAL_DOUBLE;
   pftauchhads_absDL3D_sig_trk2 = DEF_VAL_DOUBLE;
+  //Compare Analytical Extrapolator (AE) vs Transverse Extrapolator (TE)
+  pftauchhads_AEIP1D_x_val_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_AEIP1D_y_val_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_IP3DvalAE_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_IP3DvalTE_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_IP2DvalAE_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_IP2DvalTE_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_IP1DvalAE_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_IP1DvalTE_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_IP3DvalAE_2DTE_1DAE_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_IP3DvalAE_2DTE_1DTE_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_IP3DvalAE_2DAE_1DAE_trk0 = DEF_VAL_DOUBLE;
+  pftauchhads_IP3DvalTE_2DTE_1DTE_trk0 = DEF_VAL_DOUBLE;
+  //Collimation
   pftauchhads_JTD_val_trk0 = DEF_VAL_DOUBLE;
   pftauchhads_JTD_val_trk1 = DEF_VAL_DOUBLE;
   pftauchhads_JTD_val_trk2 = DEF_VAL_DOUBLE;
@@ -299,13 +348,25 @@ public:
   tree->Branch("recojettau_eta", &recojettau_eta, "recojettau_eta/D");
   tree->Branch("recojettau_phi", &recojettau_phi, "recojettau_phi/D");
   tree->Branch("recojettau_en", &recojettau_en, "recojettau_en/D");
+  tree->Branch("tau_pt_DIV_recojettau_pt", &tau_pt_DIV_recojettau_pt, "tau_pt_DIV_recojettau_pt/D");
+  tree->Branch("tau_en_DIV_recojettau_en", &tau_en_DIV_recojettau_en, "tau_en_DIV_recojettau_en/D");
+  tree->Branch("tau_trk0_pt_DIV_recojettau_pt", &tau_trk0_pt_DIV_recojettau_pt, "tau_trk0_pt_DIV_recojettau_pt/D");
+  tree->Branch("tau_trk1_pt_DIV_recojettau_pt", &tau_trk1_pt_DIV_recojettau_pt, "tau_trk1_pt_DIV_recojettau_pt/D");
+  tree->Branch("tau_trk2_pt_DIV_recojettau_pt", &tau_trk2_pt_DIV_recojettau_pt, "tau_trk2_pt_DIV_recojettau_pt/D");
+  tree->Branch("tau_trk0_en_DIV_recojettau_en", &tau_trk0_en_DIV_recojettau_en, "tau_trk0_en_DIV_recojettau_en/D");
+  tree->Branch("tau_trk1_en_DIV_recojettau_en", &tau_trk1_en_DIV_recojettau_en, "tau_trk1_en_DIV_recojettau_en/D");
+  tree->Branch("tau_trk2_en_DIV_recojettau_en", &tau_trk2_en_DIV_recojettau_en, "tau_trk2_en_DIV_recojettau_en/D");
   //dR
   tree->Branch("dR_recojettau_recotau", &dR_recojettau_recotau, "dR_recojettau_recotau/D");
+  tree->Branch("dR_tautrk_recojettau_trk0", &dR_tautrk_recojettau_trk0, "dR_tautrk_recojettau_trk0/D");
+  tree->Branch("dR_tautrk_recojettau_trk1", &dR_tautrk_recojettau_trk1, "dR_tautrk_recojettau_trk1/D");
+  tree->Branch("dR_tautrk_recojettau_trk2", &dR_tautrk_recojettau_trk2, "dR_tautrk_recojettau_trk2/D");
   tree->Branch("dR_RecoGen", &dR_RecoGen, "dR_RecoGen/D");
   tree->Branch("dR_vtxDirGen", &dR_vtxDirGen, "dR_vtxDirGen/D");
   tree->Branch("dR_tautrk_recotau_trk0", &dR_tautrk_recotau_trk0, "dR_tautrk_recotau_trk0/D");
   tree->Branch("dR_tautrk_recotau_trk1", &dR_tautrk_recotau_trk1, "dR_tautrk_recotau_trk1/D");
   tree->Branch("dR_tautrk_recotau_trk2", &dR_tautrk_recotau_trk2, "dR_tautrk_recotau_trk2/D");
+  tree->Branch("dR_TauFlightDist_JetAxis", &dR_TauFlightDist_JetAxis, "dR_TauFlightDist_JetAxis/D");
   //pftaugv
   tree->Branch("pftaugv_x", &pftaugv_x, "pftaugv_x/D");
   tree->Branch("pftaugv_y", &pftaugv_y, "pftaugv_y/D");
@@ -338,6 +399,12 @@ public:
   tree->Branch("pftauchhads_IP1D_sig_trk0", &pftauchhads_IP1D_sig_trk0, "pftauchhads_IP1D_sig_trk0/D");
   tree->Branch("pftauchhads_IP1D_sig_trk1", &pftauchhads_IP1D_sig_trk1, "pftauchhads_IP1D_sig_trk1/D");
   tree->Branch("pftauchhads_IP1D_sig_trk2", &pftauchhads_IP1D_sig_trk2, "pftauchhads_IP1D_sig_trk2/D");
+  tree->Branch("pftauchhads_AEIP1D_val_trk0", &pftauchhads_AEIP1D_val_trk0, "pftauchhads_AEIP1D_val_trk0/D");
+  tree->Branch("pftauchhads_AEIP1D_val_trk1", &pftauchhads_AEIP1D_val_trk1, "pftauchhads_AEIP1D_val_trk1/D");
+  tree->Branch("pftauchhads_AEIP1D_val_trk2", &pftauchhads_AEIP1D_val_trk2, "pftauchhads_AEIP1D_val_trk2/D");
+  tree->Branch("pftauchhads_AEIP1D_sig_trk0", &pftauchhads_AEIP1D_sig_trk0, "pftauchhads_AEIP1D_sig_trk0/D");
+  tree->Branch("pftauchhads_AEIP1D_sig_trk1", &pftauchhads_AEIP1D_sig_trk1, "pftauchhads_AEIP1D_sig_trk1/D");
+  tree->Branch("pftauchhads_AEIP1D_sig_trk2", &pftauchhads_AEIP1D_sig_trk2, "pftauchhads_AEIP1D_sig_trk2/D");
   tree->Branch("pftauchhads_sIP3D_val_trk0", &pftauchhads_sIP3D_val_trk0, "pftauchhads_sIP3D_val_trk0/D");
   tree->Branch("pftauchhads_sIP3D_val_trk1", &pftauchhads_sIP3D_val_trk1, "pftauchhads_sIP3D_val_trk1/D");
   tree->Branch("pftauchhads_sIP3D_val_trk2", &pftauchhads_sIP3D_val_trk2, "pftauchhads_sIP3D_val_trk2/D");
@@ -356,6 +423,12 @@ public:
   tree->Branch("pftauchhads_sIP1D_sig_trk0", &pftauchhads_sIP1D_sig_trk0, "pftauchhads_sIP1D_sig_trk0/D");
   tree->Branch("pftauchhads_sIP1D_sig_trk1", &pftauchhads_sIP1D_sig_trk1, "pftauchhads_sIP1D_sig_trk1/D");
   tree->Branch("pftauchhads_sIP1D_sig_trk2", &pftauchhads_sIP1D_sig_trk2, "pftauchhads_sIP1D_sig_trk2/D");
+  tree->Branch("pftauchhads_AEsIP1D_val_trk0", &pftauchhads_AEsIP1D_val_trk0, "pftauchhads_AEsIP1D_val_trk0/D");
+  tree->Branch("pftauchhads_AEsIP1D_val_trk1", &pftauchhads_AEsIP1D_val_trk1, "pftauchhads_AEsIP1D_val_trk1/D");
+  tree->Branch("pftauchhads_AEsIP1D_val_trk2", &pftauchhads_AEsIP1D_val_trk2, "pftauchhads_AEsIP1D_val_trk2/D");
+  tree->Branch("pftauchhads_AEsIP1D_sig_trk0", &pftauchhads_AEsIP1D_sig_trk0, "pftauchhads_AEsIP1D_sig_trk0/D");
+  tree->Branch("pftauchhads_AEsIP1D_sig_trk1", &pftauchhads_AEsIP1D_sig_trk1, "pftauchhads_AEsIP1D_sig_trk1/D");
+  tree->Branch("pftauchhads_AEsIP1D_sig_trk2", &pftauchhads_AEsIP1D_sig_trk2, "pftauchhads_AEsIP1D_sig_trk2/D");
   tree->Branch("pftauchhads_sDL3D_val_trk0", &pftauchhads_sDL3D_val_trk0, "pftauchhads_sDL3D_val_trk0/D");
   tree->Branch("pftauchhads_sDL3D_val_trk1", &pftauchhads_sDL3D_val_trk1, "pftauchhads_sDL3D_val_trk1/D");
   tree->Branch("pftauchhads_sDL3D_val_trk2", &pftauchhads_sDL3D_val_trk2, "pftauchhads_sDL3D_val_trk2/D");
@@ -368,6 +441,20 @@ public:
   tree->Branch("pftauchhads_absDL3D_sig_trk0", &pftauchhads_absDL3D_sig_trk0, "pftauchhads_absDL3D_sig_trk0/D");
   tree->Branch("pftauchhads_absDL3D_sig_trk1", &pftauchhads_absDL3D_sig_trk1, "pftauchhads_absDL3D_sig_trk1/D");
   tree->Branch("pftauchhads_absDL3D_sig_trk2", &pftauchhads_absDL3D_sig_trk2, "pftauchhads_absDL3D_sig_trk2/D");
+  //Compare Analytical Extrapolator (AE) vs Transverse Extrapolator (TE)
+  tree->Branch("pftauchhads_AEIP1D_x_val_trk0", &pftauchhads_AEIP1D_x_val_trk0, "pftauchhads_AEIP1D_x_val_trk0/D");
+  tree->Branch("pftauchhads_AEIP1D_y_val_trk0", &pftauchhads_AEIP1D_y_val_trk0, "pftauchhads_AEIP1D_y_val_trk0/D");
+  tree->Branch("pftauchhads_IP3DvalAE_trk0", &pftauchhads_IP3DvalAE_trk0, "pftauchhads_IP3DvalAE_trk0/D");
+  tree->Branch("pftauchhads_IP3DvalTE_trk0", &pftauchhads_IP3DvalTE_trk0, "pftauchhads_IP3DvalTE_trk0/D");
+  tree->Branch("pftauchhads_IP2DvalAE_trk0", &pftauchhads_IP2DvalAE_trk0, "pftauchhads_IP2DvalAE_trk0/D");
+  tree->Branch("pftauchhads_IP2DvalTE_trk0", &pftauchhads_IP2DvalTE_trk0, "pftauchhads_IP2DvalTE_trk0/D");
+  tree->Branch("pftauchhads_IP1DvalAE_trk0", &pftauchhads_IP1DvalAE_trk0, "pftauchhads_IP1DvalAE_trk0/D");
+  tree->Branch("pftauchhads_IP1DvalTE_trk0", &pftauchhads_IP1DvalTE_trk0, "pftauchhads_IP1DvalTE_trk0/D");
+  tree->Branch("pftauchhads_IP3DvalAE_2DTE_1DAE_trk0", &pftauchhads_IP3DvalAE_2DTE_1DAE_trk0, "pftauchhads_IP3DvalAE_2DTE_1DAE_trk0/D");
+  tree->Branch("pftauchhads_IP3DvalAE_2DTE_1DTE_trk0", &pftauchhads_IP3DvalAE_2DTE_1DTE_trk0, "pftauchhads_IP3DvalAE_2DTE_1DTE_trk0/D");
+  tree->Branch("pftauchhads_IP3DvalAE_2DAE_1DAE_trk0", &pftauchhads_IP3DvalAE_2DAE_1DAE_trk0, "pftauchhads_IP3DvalAE_2DAE_1DAE_trk0/D");
+  tree->Branch("pftauchhads_IP3DvalTE_2DTE_1DTE_trk0", &pftauchhads_IP3DvalTE_2DTE_1DTE_trk0, "pftauchhads_IP3DvalTE_2DTE_1DTE_trk0/D");
+  //Collimation
   tree->Branch("pftauchhads_JTD_val_trk0", &pftauchhads_JTD_val_trk0, "pftauchhads_JTD_val_trk0/D");
   tree->Branch("pftauchhads_JTD_val_trk1", &pftauchhads_JTD_val_trk1, "pftauchhads_JTD_val_trk1/D");
   tree->Branch("pftauchhads_JTD_val_trk2", &pftauchhads_JTD_val_trk2, "pftauchhads_JTD_val_trk2/D");
@@ -460,13 +547,25 @@ public:
   tree->SetBranchAddress("recojettau_eta", &recojettau_eta);
   tree->SetBranchAddress("recojettau_phi", &recojettau_phi);
   tree->SetBranchAddress("recojettau_en", &recojettau_en);
+  tree->SetBranchAddress("tau_pt_DIV_recojettau_pt", &tau_pt_DIV_recojettau_pt);
+  tree->SetBranchAddress("tau_en_DIV_recojettau_en", &tau_en_DIV_recojettau_en);
+  tree->SetBranchAddress("tau_trk0_pt_DIV_recojettau_pt", &tau_trk0_pt_DIV_recojettau_pt);
+  tree->SetBranchAddress("tau_trk1_pt_DIV_recojettau_pt", &tau_trk1_pt_DIV_recojettau_pt);
+  tree->SetBranchAddress("tau_trk2_pt_DIV_recojettau_pt", &tau_trk2_pt_DIV_recojettau_pt);
+  tree->SetBranchAddress("tau_trk0_en_DIV_recojettau_en", &tau_trk0_en_DIV_recojettau_en);
+  tree->SetBranchAddress("tau_trk1_en_DIV_recojettau_en", &tau_trk1_en_DIV_recojettau_en);
+  tree->SetBranchAddress("tau_trk2_en_DIV_recojettau_en", &tau_trk2_en_DIV_recojettau_en);
   //dR
   tree->SetBranchAddress("dR_recojettau_recotau", &dR_recojettau_recotau);
+  tree->SetBranchAddress("dR_tautrk_recojettau_trk0", &dR_tautrk_recojettau_trk0);
+  tree->SetBranchAddress("dR_tautrk_recojettau_trk1", &dR_tautrk_recojettau_trk1);
+  tree->SetBranchAddress("dR_tautrk_recojettau_trk2", &dR_tautrk_recojettau_trk2);
   tree->SetBranchAddress("dR_RecoGen", &dR_RecoGen);
   tree->SetBranchAddress("dR_vtxDirGen", &dR_vtxDirGen);
   tree->SetBranchAddress("dR_tautrk_recotau_trk0", &dR_tautrk_recotau_trk0);
   tree->SetBranchAddress("dR_tautrk_recotau_trk1", &dR_tautrk_recotau_trk1);
   tree->SetBranchAddress("dR_tautrk_recotau_trk2", &dR_tautrk_recotau_trk2);
+  tree->SetBranchAddress("dR_TauFlightDist_JetAxis", &dR_TauFlightDist_JetAxis);
   //pftaugv
   tree->SetBranchAddress("pftaugv_x", &pftaugv_x);
   tree->SetBranchAddress("pftaugv_y", &pftaugv_y);
@@ -499,6 +598,11 @@ public:
   tree->SetBranchAddress("pftauchhads_IP1D_sig_trk0", &pftauchhads_IP1D_sig_trk0);
   tree->SetBranchAddress("pftauchhads_IP1D_sig_trk1", &pftauchhads_IP1D_sig_trk1);
   tree->SetBranchAddress("pftauchhads_IP1D_sig_trk2", &pftauchhads_IP1D_sig_trk2);
+  tree->SetBranchAddress("pftauchhads_AEIP1D_val_trk0", &pftauchhads_AEIP1D_val_trk0);
+  tree->SetBranchAddress("pftauchhads_AEIP1D_val_trk1", &pftauchhads_AEIP1D_val_trk1);
+  tree->SetBranchAddress("pftauchhads_AEIP1D_val_trk2", &pftauchhads_AEIP1D_val_trk2);
+  tree->SetBranchAddress("pftauchhads_AEIP1D_sig_trk0", &pftauchhads_AEIP1D_sig_trk0);
+  tree->SetBranchAddress("pftauchhads_AEIP1D_sig_trk1", &pftauchhads_AEIP1D_sig_trk1);
   tree->SetBranchAddress("pftauchhads_sIP3D_val_trk0", &pftauchhads_sIP3D_val_trk0);
   tree->SetBranchAddress("pftauchhads_sIP3D_val_trk1", &pftauchhads_sIP3D_val_trk1);
   tree->SetBranchAddress("pftauchhads_sIP3D_val_trk2", &pftauchhads_sIP3D_val_trk2);
@@ -517,6 +621,13 @@ public:
   tree->SetBranchAddress("pftauchhads_sIP1D_sig_trk0", &pftauchhads_sIP1D_sig_trk0);
   tree->SetBranchAddress("pftauchhads_sIP1D_sig_trk1", &pftauchhads_sIP1D_sig_trk1);
   tree->SetBranchAddress("pftauchhads_sIP1D_sig_trk2", &pftauchhads_sIP1D_sig_trk2);
+  tree->SetBranchAddress("pftauchhads_AEIP1D_sig_trk2", &pftauchhads_AEIP1D_sig_trk2);
+  tree->SetBranchAddress("pftauchhads_AEsIP1D_val_trk0", &pftauchhads_AEsIP1D_val_trk0);
+  tree->SetBranchAddress("pftauchhads_AEsIP1D_val_trk1", &pftauchhads_AEsIP1D_val_trk1);
+  tree->SetBranchAddress("pftauchhads_AEsIP1D_val_trk2", &pftauchhads_AEsIP1D_val_trk2);
+  tree->SetBranchAddress("pftauchhads_AEsIP1D_sig_trk0", &pftauchhads_AEsIP1D_sig_trk0);
+  tree->SetBranchAddress("pftauchhads_AEsIP1D_sig_trk1", &pftauchhads_AEsIP1D_sig_trk1);
+  tree->SetBranchAddress("pftauchhads_AEsIP1D_sig_trk2", &pftauchhads_AEsIP1D_sig_trk2);
   tree->SetBranchAddress("pftauchhads_sDL3D_val_trk0", &pftauchhads_sDL3D_val_trk0);
   tree->SetBranchAddress("pftauchhads_sDL3D_val_trk1", &pftauchhads_sDL3D_val_trk1);
   tree->SetBranchAddress("pftauchhads_sDL3D_val_trk2", &pftauchhads_sDL3D_val_trk2);
@@ -529,6 +640,20 @@ public:
   tree->SetBranchAddress("pftauchhads_absDL3D_sig_trk0", &pftauchhads_absDL3D_sig_trk0);
   tree->SetBranchAddress("pftauchhads_absDL3D_sig_trk1", &pftauchhads_absDL3D_sig_trk1);
   tree->SetBranchAddress("pftauchhads_absDL3D_sig_trk2", &pftauchhads_absDL3D_sig_trk2);
+  //Compare Analytical Extrapolator (AE) vs Transverse Extrapolator (TE)
+  tree->SetBranchAddress("pftauchhads_AEIP1D_x_val_trk0", &pftauchhads_AEIP1D_x_val_trk0);
+  tree->SetBranchAddress("pftauchhads_AEIP1D_y_val_trk0", &pftauchhads_AEIP1D_y_val_trk0);
+  tree->SetBranchAddress("pftauchhads_IP3DvalAE_trk0", &pftauchhads_IP3DvalAE_trk0);
+  tree->SetBranchAddress("pftauchhads_IP3DvalTE_trk0", &pftauchhads_IP3DvalTE_trk0);
+  tree->SetBranchAddress("pftauchhads_IP2DvalAE_trk0", &pftauchhads_IP2DvalAE_trk0);
+  tree->SetBranchAddress("pftauchhads_IP2DvalTE_trk0", &pftauchhads_IP2DvalTE_trk0);
+  tree->SetBranchAddress("pftauchhads_IP1DvalAE_trk0", &pftauchhads_IP1DvalAE_trk0);
+  tree->SetBranchAddress("pftauchhads_IP1DvalTE_trk0", &pftauchhads_IP1DvalTE_trk0);
+  tree->SetBranchAddress("pftauchhads_IP3DvalAE_2DTE_1DAE_trk0", &pftauchhads_IP3DvalAE_2DTE_1DAE_trk0);
+  tree->SetBranchAddress("pftauchhads_IP3DvalAE_2DTE_1DTE_trk0", &pftauchhads_IP3DvalAE_2DTE_1DTE_trk0);
+  tree->SetBranchAddress("pftauchhads_IP3DvalAE_2DAE_1DAE_trk0", &pftauchhads_IP3DvalAE_2DAE_1DAE_trk0);
+  tree->SetBranchAddress("pftauchhads_IP3DvalTE_2DTE_1DTE_trk0", &pftauchhads_IP3DvalTE_2DTE_1DTE_trk0);
+  //Collimation
   tree->SetBranchAddress("pftauchhads_JTD_val_trk0", &pftauchhads_JTD_val_trk0);
   tree->SetBranchAddress("pftauchhads_JTD_val_trk1", &pftauchhads_JTD_val_trk1);
   tree->SetBranchAddress("pftauchhads_JTD_val_trk2", &pftauchhads_JTD_val_trk2);
