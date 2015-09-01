@@ -5,6 +5,7 @@ This Macro
 Need to specify
 1. See Declare Constants
 2. There is a difference between int first[arraycomp]; int second[arraycomp]; and double first[arraycomp]; double second[arraycomp];
+   There is also a difference to tak into account in the code in case you plot array or simple double/int
 */
 /////
 //   To run: root -l SigBkgVarsOverlaid.cc+
@@ -32,20 +33,207 @@ using namespace std;
 /////
 //   Declare constants
 /////
-const string path     = "../Rootplas/";
-const char *samples[] = {"bkg", "GGHLL_b"};
-const string selection  = "";
-const int numvar        = 100;
+const string path      = "/home/francescoromeovb/Shared_win_ubu_/Work/JetTauFakeRateDisc/AEIP1D_3/";
+//const char *samples[]  = {"Qcd", "Tau"};
+const char *samples[]  = {"Tau"};
+const string selection = "";
+const int numvar       = 100;
 
-const char *varfirst[]        = {"pftauchhads_sIP3D_sig"};
-const char *varsecond[]       = {"1"};
-const char *vartitle[]        = {"sIP3D_sig"};
-const double inRange[numvar]  = {-11};
-const double endRange[numvar] = {11};
-const int    bin[numvar]      = {100};
+/*
+const char *varfirst[]        = {"pftauchhads_AEsIP1D_val_trk0", "pftauchhads_AEsIP1D_sig_trk0"};
+const char *varsecond[]       = {"1", "1"};
+const char *vartitle[]        = {"signed IP1D val (z-axis)", "signed IP1D sig (x-axis)"};
+const double inRange[numvar]  = {-0.05,-50};
+const double endRange[numvar] = {0.05,100};
+const int    bin[numvar]      = {100,150};
 bool ylogscale    = true;
 double setminimum = 0.1;
 double setmaximum = 100;
+*/
+
+/*
+const char *varfirst[]        = {"pftauchhads_AEsIP1D_val_trk0", "pftauchhads_AEIP1D_x_val_trk0", "pftauchhads_AEIP1D_y_val_trk0"};
+const char *varsecond[]       = {"1", "1", "1"};
+const char *vartitle[]        = {"signed IP1D (z-axis)", "signed IP1D (x-axis)", "signed IP1D (y-axis)"};
+const double inRange[numvar]  = {-0.05,-0.05,-0.05};
+const double endRange[numvar] = {0.05,0.05,0.05};
+const int    bin[numvar]      = {100,100,100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+//Difference of IP3D minus IP2D+IP1D
+const char *varfirst[]        = {"pftauchhads_IP3DvalAE_2DAE_1DAE_trk0", "pftauchhads_IP3DvalAE_2DTE_1DAE_trk0", "pftauchhads_IP3DvalAE_2DTE_1DTE_trk0"};
+const char *varsecond[]       = {"pftauchhads_IP3DvalAE_trk0", "pftauchhads_IP3DvalAE_trk0", "pftauchhads_IP3DvalAE_trk0"};
+const char *vartitle[]        = {"#frac{AE_IP3D - #sqrt{AE_IP2D^{2}+AE_IP1D^{2}}}{AE_IP3D}", "#frac{AE_IP3D - #sqrt{TE_IP2D^{2}+AE_IP1D^{2}}}{AE_IP3D}", "#frac{AE_IP3D - #sqrt{TE_IP2D^{2}+TE_IP1D^{2}}}{AE_IP3D}"};
+const double inRange[numvar]  = {-0.1,-0.1,-7};
+const double endRange[numvar] = {0.1,  1, 3};
+const int    bin[numvar]      = {50,  50,50};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+/*
+const char *varfirst[]        = {"pftauchhads_IP3DvalAE_2DAE_1DAE_trk0", "pftauchhads_IP3DvalAE_2DTE_1DAE_trk0", "pftauchhads_IP3DvalAE_2DTE_1DTE_trk0"};
+const char *varsecond[]       = {"1", "1", "1"};
+const char *vartitle[]        = {"AE_IP3D - #sqrt{AE_IP2D^{2}+AE_IP1D^{2}}", "AE_IP3D - #sqrt{TE_IP2D^{2}+AE_IP1D^{2}}", "AE_IP3D - #sqrt{TE_IP2D^{2}+TE_IP1D^{2}}"};
+const double inRange[numvar]  = {-5,-5,-5};
+const double endRange[numvar] = {5,5,5};
+const int    bin[numvar]      = {50,50,50};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+//TauVSTauJet
+/*
+const char *varfirst[]        = {"tau_pt_DIV_recojettau_pt"};
+const char *varsecond[]       = {"1"};
+const char *vartitle[]        = {"pT_{#tau}/pT_{jet#tau}"};
+const double inRange[numvar]  = {0};
+const double endRange[numvar] = {1};
+const int    bin[numvar]      = {50};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+//Impact parameters
+/*
+const char *varfirst[]        = {"pftauchhads_IP3D_val_trk0", "pftauchhads_AEIP1D_val_trk0", "pftauchhads_IP3D_sig_trk0", "pftauchhads_AEIP1D_sig_trk0"};
+const char *varsecond[]       = {"1", "1", "1", "1", "1", "1"};
+const char *vartitle[]        = {"sIP3D val trk0", "AEsIP1D val trk0", "sIP3D sig trk0", "AEsIP1D sig trk0"};
+const double inRange[numvar]  = {0,0,0,0,0,0};
+//const double inRange[numvar]  = {-0.05,-0.05,-10,-10};
+const double endRange[numvar] = {0.05,0.05,10,10};
+const int    bin[numvar]      = {100,100,100,100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+/*
+const char *varfirst[]        = {"pftauchhads_sIP3D_val_trk0", "pftauchhads_sIP2D_val_trk0", "pftauchhads_sIP1D_val_trk0", "pftauchhads_sIP3D_sig_trk0", "pftauchhads_sIP2D_sig_trk0", "pftauchhads_sIP1D_sig_trk0"};
+const char *varsecond[]       = {"1", "1", "1", "1", "1", "1"};
+const char *vartitle[]        = {"sIP3D val trk0", "sIP2D val trk0", "sIP1D val trk0", "sIP3D sig trk0", "sIP2D sig trk0", "sIP1D sig trk0"};
+//const double inRange[numvar]  = {0,0,0,0,0,0};
+const double inRange[numvar]  = {-0.05,-0.05,-0.05,-10,-10,-10};
+const double endRange[numvar] = {0.05,0.05,0.05,10,10,10};
+const int    bin[numvar]      = {100,100,100,100,100,100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+/*
+//Decay lenght
+const char *varfirst[]        = {"pftauchhads_absDL3D_val_trk0", "pftauchhads_absDL3D_val_trk1", "pftauchhads_absDL3D_val_trk2", "pftauchhads_absDL3D_sig_trk0", "pftauchhads_absDL3D_sig_trk1", "pftauchhads_absDL3D_sig_trk2"};
+const char *varsecond[]       = {"1", "1", "1", "1", "1", "1"};
+const char *vartitle[]        = {"absDL3D val trk0", "absDL3D val trk1", "absDL3D val trk2", "absDL3D sig trk0", "absDL3D sig trk1", "absDL3D sig trk2"};
+const double inRange[numvar]  = {0,0,0,0,0,0};
+const double endRange[numvar] = {7,7,7,7000,7000,7000};
+const int    bin[numvar]      = {100,100,100,100,100,100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+/*
+//Flight distance
+const char *varfirst[]        = {"pftau_pvsv_dist3d_val", "pftau_pvsv_dist3d_sig", "pftau_pvsv_dist2d_val", "pftau_pvsv_dist2d_sig"};
+const char *varsecond[]       = {"1", "1", "1", "1", "1", "1"};
+const char *vartitle[]        = {"Flight Dist 3D val", "Flight Dist 3D sig", "Flight Dist 2D val", "Flight Dist 2D sig"};
+const double inRange[numvar]  = {0,0,0,0,0,0};
+const double endRange[numvar] = {5,15,5,15};
+const int    bin[numvar]      = {100,100,100,100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+//Tau Collimation
+/*
+const char *varfirst[]        = {"dR_tautrk_recotau_trk0", "dR_tautrk_recotau_trk1", "dR_tautrk_recotau_trk2"};//, "pftauchhads_JTD_val_trk0", "pftauchhads_JTD_val_trk1", "pftauchhads_JTD_val_trk2"};
+const char *varsecond[]       = {"1", "1", "1", "1", "1", "1"};
+const char *vartitle[]        = {"dR(Trk0,RecoTau)", "dR(Trk1,RecoTau)", "dR(Trk2,RecoTau)", "dist(Trk0,RecoTau)", "dist(Trk1,RecoTau)", "dist(Trk2,RecoTau)",};
+const double inRange[numvar]  = {0,0,0,0,0,0};
+const double endRange[numvar] = {0.15,0.15,0.15,0.05,0.05,0.05};
+const int    bin[numvar]      = {100,100,100,100,100,100,100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+//Vertex compatibility
+/*
+const char *varfirst[]        = {"diff_pv_avfbs_nchi2_unbpv_avfbs_nchi2"};
+const char *varsecond[]       = {"1", "1", "1", "1", "1", "1"};
+const char *vartitle[]        = {"#chi^{2}_{PV}-#chi^{2}_{PV-TauTrks}"};
+const double inRange[numvar]  = {-0.1,0,0,0,0,0};
+const double endRange[numvar] = {0.15,0.15,0.15,0.05,0.05,0.05};
+const int    bin[numvar]      = {100,100,100,100,100,100,100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+/*
+const char *varfirst[]        = {"pftau_pvsv_dist3d_val", "pftau_pvsv_dist3d_sig"};
+const char *varsecond[]       = {"1", "1"};
+const char *vartitle[]        = {"pftau_pvsv_dist3d_val", "pftau_pvsv_dist3d_sig"};
+const double inrange[numvar]  = {0,0};
+const double endrange[numvar] = {5,10};
+const int    bin[numvar]      = {50,100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+/*
+const char *varfirst[]       = {"pftauchhads_pt", "pftauchhads_pt", "pftauchhads_pt"};//, "pftauchhads_IP2D_sig"};
+const char *varsecond[]      = {"1","1","1", "1","1","1"};
+const char *vartitle[]       = {"tau pt 1", "tau pt 2", "tau pt 3"};
+const double inRange[numvar]  = {0, 0, 0};
+const double endRange[numvar] = {500, 500, 500};
+const int    bin[numvar]      = {100, 100, 100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+/*
+const char *varfirst[]       = {"pftauchhads_IP3D_sig", "pftauchhads_IP2D_sig"};
+const char *varsecond[]      = {"1","1","1", "1","1","1"};
+const char *vartitle[]       = {"IP3D_sig trk1", "IP2D_sig trk1"};
+const double inRange[numvar]  = {0, 0, 0};
+const double endRange[numvar] = {9, 8, 10};
+const int    bin[numvar]      = {100, 100, 100};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+/*
+const char *varfirst[]        = {"dR_tautrk_recotau"};
+const char *varsecond[]       = {"1"};
+const char *vartitle[]        = {"dR_tautrk_recotau"};
+const double inRange[numvar]  = {0};
+const double endRange[numvar] = {0.05};
+const int    bin[numvar]      = {150};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+/*
+const char *varfirst[]        = {"pvtauvtx_genditauvtx_x", "pvtauvtx_genditauvtx_y", "pvtauvtx_genditauvtx_z"};//, "unbpv_KVF_genditauvtx_x", "unbpv_KVF_genditauvtx_y", "unbpv_KVF_genditauvtx_z"};
+const char *varsecond[]       = {"1", "1", "1", "1", "1", "1"};
+const char *vartitle[]        = {"(recoVtx(AVF)-genVtx).x", "(recoVtx(AVF)-genVtx).y", "(recoVtx(AVF)-genVtx).z", "(recoVtx(KVF)-genVtx).x", "(recoVtx(KVF)-genVtx).y", "(recoVtx(KVF)-genVtx).z"};
+const double inRange[numvar]  = {-0.1,-0.1,-20,-0.1,-0.1,-20};
+const double endRange[numvar] = {0.1,0.1,20,0.1,0.1,20};
+const int    bin[numvar]      = {200,200,400,200,200,400};
+bool ylogscale    = true;
+double setminimum = 0.01;
+double setmaximum = 100;
+*/
 
 //Other options
 bool saveplots = true;
@@ -68,16 +256,12 @@ void SigBkgVarsOverlaid(){
  vector<string> vartitles(vartitle, vartitle + sizeof(vartitle)/sizeof(vartitle[0])); 
  const uint variables_size = varfirsts.size();
  for(uint vars=0; vars<variables_size; vars++)
- //for(uint vars=0; vars<1; vars++)
  {
-  TCanvas* c1 = new TCanvas(vartitles[vars].c_str(),vartitles[vars].c_str(),200,200,800,600);
+  TCanvas* c1 = new TCanvas(vartitles[vars].c_str(),vartitles[vars].c_str(),200,200,800,800);
   if(ylogscale) c1->SetLogy();
   TLegend *leg = new TLegend(0.7, 0.7, 0.9, 0.9);
-  //jet_csv //TLegend *leg = new TLegend(0.5, 0.7, 0.7, 0.9);
-  leg->SetHeader("Samples");
   leg->SetBorderSize(0);
   leg->SetTextSize(0.05);
-  //leg->SetTextSize(0.035);
   //Do plots
   //Loop over samples
   vector<string> rootplas(samples, samples + sizeof(samples)/sizeof(samples[0]));
@@ -99,19 +283,34 @@ void SigBkgVarsOverlaid(){
    }
    //Make plot
    TFile* f = Call_TFile((rootplas[smp]).c_str()); TTree* tree; f->GetObject("tree",tree);
-   const int arraycomp = 10;
-   double first[arraycomp];
-   double second[arraycomp];
-   tree->SetBranchAddress(varfirsts[vars].c_str(),&first); 
-   tree->SetBranchAddress(varseconds[vars].c_str(),&second); 
-   for(int en=0; en<tree->GetEntries(); en++)
-   //for(int en=0; en<10; en++)
+   double first;
+   double second;
+   double pftauchhads_num;
+   //const int arraycomp = 10;
+   //double first[arraycomp];
+   //double second[arraycomp];
+   tree->SetBranchAddress(varfirsts[vars].c_str(),&first);
+   tree->SetBranchAddress(varseconds[vars].c_str(),&second);
+   tree->SetBranchAddress("pftauchhads_num", &pftauchhads_num);
+   //for(int en=0; en<tree->GetEntries(); en++)
+   for(int en=0; en<100000; en++)
    {
     tree->GetEntry(en);
+    //if(first==-999 || first==0) continue;
+    if(first==-999) continue;
+    if(pftauchhads_num==0) continue;       
+    if((varfirsts[vars]=="dR_tautrk_recotau_trk0" && pftauchhads_num!=1) ||
+       (varfirsts[vars]=="dR_tautrk_recotau_trk1" && pftauchhads_num!=2) ||
+       (varfirsts[vars]=="dR_tautrk_recotau_trk2" && pftauchhads_num!=3)
+      ) continue;
+    if((varfirsts[vars]=="pftauchhads_JTD_val_trk0" || varfirsts[vars]=="pftauchhads_JTD_val_trk1" ||varfirsts[vars]=="pftauchhads_JTD_val_trk2")) first = -first;
+    if(varseconds[vars]=="1") hist->Fill(first);         
+    if(varseconds[vars]!="1") hist->Fill(double(first)/double(second));               
     //cout<<"Val "<<en<<" "<<first[vars]<<" "<<second[vars]<<" "<<double(second[vars])<<endl;
-    if(first[vars]==-999) continue;
-    if(varseconds[vars]=="1") hist->Fill(first[vars]);  
-    if(varseconds[vars]!="1") hist->Fill(double(first[vars])/double(second[vars]));  
+    //if(first[vars]==-999 || first[vars]==0) continue;
+    //if(pftauchhads_num==0) continue;
+    //if(varseconds[vars]=="1") hist->Fill(first[vars]);  
+    //if(varseconds[vars]!="1") hist->Fill(double(first[vars])/double(second[vars]));  
    }
    cout<<"Entries of "<<rootplas[smp]<<" is "<<hist->Integral()<<endl;
    double scale = hist->Integral();
@@ -134,12 +333,12 @@ void SigBkgVarsOverlaid(){
     gStyle->SetStatFontSize(0.1); //Vertical Size
    }
    if(smp==0){
-    leg->AddEntry(hist,"Jet","L"); 
+    leg->AddEntry(hist,"Tau","L"); 
     hist->SetMinimum(setminimum);
     hist->SetMaximum(setmaximum);
     hist->Draw(""); 
    }else{
-    leg->AddEntry(hist,"tau","L"); 
+    leg->AddEntry(hist,"Tau","L"); 
     hist->SetMinimum(setminimum);
     hist->SetMaximum(setmaximum);
     hist->Draw("sames");
@@ -147,7 +346,7 @@ void SigBkgVarsOverlaid(){
   } 
   leg->Draw();
   string num = convertToString(double(vars));
-  string namefile = "SigBkgVarsOverlaid_"+varfirsts[vars]+"_"+num+".pdf";
+  string namefile = "SigBkgVarsOverlaid_"+varfirsts[vars]+".pdf";
   if(saveplots) c1->SaveAs(namefile.c_str());
  }
 }

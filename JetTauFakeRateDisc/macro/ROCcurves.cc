@@ -32,18 +32,17 @@ using namespace std;
 /////
 //   Declare constants
 /////
-const string path     = "../Rootplas/";
-const char *samples[] = {"bkg", "GGHLL_b"};
+const string path     = "/home/francescoromeovb/Shared_win_ubu_/Work/JetTauFakeRateDisc/AEIP1D/";
+const char *samples[] = {"Qcd", "Tau"};
 const string selection = "";
 const int numvar       = 100;
 
-const char *varfirst[]        = {"pftauchhads_IP2D_val[0]", "pftauchhads_IP3D_val[0]"};
-const char *varsecond[]       = {"1", "1"}; 
-//,"jettrksallch_num2vno2v[0]","jettrksallch_num2vno2v[1]","jettrksallch_num2vno2v[2]","jettrksallch_num2vno2v[3]","jettrksallch_num2vno2v[4]"};
-const char *vartitle[]        = {"IP2D_val", "IP3D_val"};
-const double cutIni[numvar]  = {0,0,};
-const double cutFin[numvar]  = {3.5,35};
-const int    npoints[numvar] = {100,100};
+const char *varfirst[]       = {"pftauchhads_IP3D_val_trk0", "pftauchhads_AEIP1D_val_trk0", "pftauchhads_IP3D_sig_trk0", "pftauchhads_AEIP1D_sig_trk0"};
+const char *varsecond[]      = {"1","1","1","1"}; 
+const char *vartitle[]       = {"sIP3D val trk0", "AEsIP1D val trk0", "sIP3D sig trk0", "AEsIP1D sig trk0"};
+const double cutIni[numvar]  = {0,0,0,0};
+const double cutFin[numvar]  = {0.05,0.05,10,10};
+const int    npoints[numvar] = {1000,1000,1000,1000};
 const string namefile        = "ROC_IP_val.pdf";
 
 

@@ -5,10 +5,10 @@ This Macro
 Need to specify
 0. See Declare constants
 1. Do "voms-proxy-init --voms cms" if you read remote files
-TTH. lcg-ls srm://stormfe1.pi.infn.it:8444/srm/managerv2?SFN=/cms/store/user/fromeo/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/crab_TTHbb_
-TTH. lcg-ls srm://storm-se-01.ba.infn.it:8444/srm/managerv2?SFN=/cms/store/user/fromeo/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/crab_TTHbb_ 
-TTJets. lcg-ls srm://stormfe1.pi.infn.it:8444/srm/managerv2?SFN=/cms/store/user/fromeo/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/crab_TTJetsbb_
-TTJets. lcg-ls srm://storm-se-01.ba.infn.it:8444/srm/managerv2?SFN=/cms/store/user/fromeo/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/crab_TTJetsbb_ 
+Tau. lcg-ls srm://stormfe1.pi.infn.it:8444/srm/managerv2?SFN=/cms/store/user/fromeo/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6 
+Tau. lcg-ls srm://storm-se-01.ba.infn.it:8444/srm/managerv2?SFN=/cms/store/user/fromeo/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6
+QCD. lcg-ls srm://stormfe1.pi.infn.it:8444/srm/managerv2?SFN=/cms/store/user/fromeo/QCD_Pt-15to3000_Tune4C_Flat_13TeV_pythia8
+QCD. lcg-ls srm://storm-se-01.ba.infn.it:8444/srm/managerv2?SFN=/cms/store/user/fromeo/QCD_Pt-15to3000_Tune4C_Flat_13TeV_pythia8
 3. Do 0,$s/\/cms/root:\/\/xrootd-cms.infn.it\//g in the file specified in name_file
 */
 /////
@@ -29,8 +29,10 @@ using namespace std;
 /////
 const string tree_name    = "demo/tree"; //The name of the tree you have defined in your rootplas
 //tth
-const string name_file    = "Sig.txt"; //List with the path of the rootfiles
-const string name_rootple = "Signal.root"; //The name of the new rootpla
+const string name_file    = "Tau.txt"; //List with the path of the rootfiles
+const string name_rootple = "Tau.root"; //The name of the new rootpla
+const string name_file    = "Qcd.txt"; //List with the path of the rootfiles
+const string name_rootple = "Qcd.root"; //The name of the new rootpla
 /////
 //   Main function
 /////
