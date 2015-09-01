@@ -33,11 +33,25 @@ using namespace std;
 /////
 //   Declare constants
 /////
-const string path      = "/home/francescoromeovb/Shared_win_ubu_/Work/JetTauFakeRateDisc/AEIP1D_2/";
+const string path      = "/home/francescoromeovb/Shared_win_ubu_/Work/JetTauFakeRateDisc/AEIP1D_3/";
+//const char *samples[]  = {"Qcd", "Tau"};
 const char *samples[]  = {"Tau"};
 const string selection = "";
 const int numvar       = 100;
 
+/*
+const char *varfirst[]        = {"pftauchhads_AEsIP1D_val_trk0", "pftauchhads_AEsIP1D_sig_trk0"};
+const char *varsecond[]       = {"1", "1"};
+const char *vartitle[]        = {"signed IP1D val (z-axis)", "signed IP1D sig (x-axis)"};
+const double inRange[numvar]  = {-0.05,-50};
+const double endRange[numvar] = {0.05,100};
+const int    bin[numvar]      = {100,150};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
+*/
+
+/*
 const char *varfirst[]        = {"pftauchhads_AEsIP1D_val_trk0", "pftauchhads_AEIP1D_x_val_trk0", "pftauchhads_AEIP1D_y_val_trk0"};
 const char *varsecond[]       = {"1", "1", "1"};
 const char *vartitle[]        = {"signed IP1D (z-axis)", "signed IP1D (x-axis)", "signed IP1D (y-axis)"};
@@ -47,8 +61,18 @@ const int    bin[numvar]      = {100,100,100};
 bool ylogscale    = true;
 double setminimum = 0.1;
 double setmaximum = 100;
+*/
 
 //Difference of IP3D minus IP2D+IP1D
+const char *varfirst[]        = {"pftauchhads_IP3DvalAE_2DAE_1DAE_trk0", "pftauchhads_IP3DvalAE_2DTE_1DAE_trk0", "pftauchhads_IP3DvalAE_2DTE_1DTE_trk0"};
+const char *varsecond[]       = {"pftauchhads_IP3DvalAE_trk0", "pftauchhads_IP3DvalAE_trk0", "pftauchhads_IP3DvalAE_trk0"};
+const char *vartitle[]        = {"#frac{AE_IP3D - #sqrt{AE_IP2D^{2}+AE_IP1D^{2}}}{AE_IP3D}", "#frac{AE_IP3D - #sqrt{TE_IP2D^{2}+AE_IP1D^{2}}}{AE_IP3D}", "#frac{AE_IP3D - #sqrt{TE_IP2D^{2}+TE_IP1D^{2}}}{AE_IP3D}"};
+const double inRange[numvar]  = {-0.1,-0.1,-7};
+const double endRange[numvar] = {0.1,  1, 3};
+const int    bin[numvar]      = {50,  50,50};
+bool ylogscale    = true;
+double setminimum = 0.1;
+double setmaximum = 100;
 /*
 const char *varfirst[]        = {"pftauchhads_IP3DvalAE_2DAE_1DAE_trk0", "pftauchhads_IP3DvalAE_2DTE_1DAE_trk0", "pftauchhads_IP3DvalAE_2DTE_1DTE_trk0"};
 const char *varsecond[]       = {"1", "1", "1"};

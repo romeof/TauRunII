@@ -29,12 +29,12 @@ process.load("RecoTauTag.Configuration.RecoPFTauTag_cff")
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-    'file:/afs/cern.ch/work/f/fromeo/CMSSW_7_2_4/src/rootfiles/GluGluToHToTauTau_M125_D08.root'
+    'file:/afs/cern.ch/work/f/fromeo/RootFiles/GluGluToHToTauTau_M125_D08.root'
     #'/store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/AODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/1813E94A-D36E-E411-8EDC-3417EBE34D08.root'
     ),
  skipEvents = cms.untracked.uint32(0) #Skip the first n evt, or comment this line if you do not want to skip evt
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) ) #Num of evt to be analysed (whatever is the starting evt)
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) ) #Num of evt to be analysed (whatever is the starting evt)
 #####
 ##   Output file
 #####
